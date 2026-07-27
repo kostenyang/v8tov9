@@ -1,27 +1,67 @@
-﻿# Tasks ??VCF 5.2.1 ??9.1 ??
+# Tasks — VCF 5.2.1 → 9.1 升級
 
 ## NSX (Part 1)
-- [x] ?臬 NSX 9.1 bundle (.mub) + ?亙? EULA
-- [x] ?? Upgrade Coordinator ??9.1
-- [x] Pre-checks ??嚗? warnings acknowledge嚗?- [x] NSX Manager (MP) ?? ??SUCCESS嚗耨 compute manager ?閮餃?嚗?- [x] NSX Host VIB ?4 ?? ??SUCCESS嚗?/4嚗?  - [x] 閫?vLCM health check嚗???vSAN HCL 皜祈岫
-  - [x] 閫?DRS/vCLS嚗耨 nested VM guestId=vmkernel8 + vHW-20嚗WAIT嚗?- [x] NSX Edge ??SUCCESS嚗kip嚗 edge嚗?
+- [x] 匯入 NSX 9.1 bundle (.mub) + 接受 EULA
+- [x] 升級 Upgrade Coordinator → 9.1
+- [x] Pre-checks 通過（3 warnings acknowledge）
+- [x] NSX Manager (MP) 升級 → SUCCESS（修 compute manager 重新註冊）
+- [x] NSX Host VIB ×4 升級 → SUCCESS（4/4）
+  - [x] 解 vLCM health check：靜音 vSAN HCL 測試
+  - [x] 解 DRS/vCLS：修 nested VM guestId=vmkernel8 + vHW-20（MWAIT）
+- [x] NSX Edge → SUCCESS（skip，無 edge）
+
 ## vCenter
-- [x] ?? VCSA 9.1 ISO (F:)
-- [x] precheck ?券?嚗egacy framework, skip-interop嚗?- [x] **?瑁? migration ?? ??摰? (exit 0)**
-  - [x] Stage 1 ?函蔡??appliance (.151)
-  - [x] rpminstall / precheck / export / firstboot / import ??SUCCEEDED
-  - [x] IP ?? .151 ??.142嚗?璈?璈?  - [x] 撽???vCenter **9.1.0.0100 build 25417926** ??.142?SO OK?? host CONNECTED?nventory 摰
+- [x] 重掛 VCSA 9.1 ISO (F:)
+- [x] precheck 全過（legacy framework, skip-interop）
+- [x] **執行 migration 升級 → 完成 (exit 0)**
+  - [x] Stage 1 部署新 appliance (.151)
+  - [x] rpminstall / precheck / export / firstboot / import 全 SUCCEEDED
+  - [x] IP 切換 .151 → .142，舊機關機
+  - [x] 驗證新 vCenter **9.1.0.0100 build 25417926** 在 .142、SSO OK、4 host CONNECTED、inventory 完整
 
-## ESXi ?4 (Broadwell CPU 蝜?)
-- [x] 撽???航?嚗sxi9-cputest ????嚗?- [x] **?潛嚗rofile-update 頝臬???9.1 ??Broadwell 銝???llowLegacyCPU嚗sx03 撖西?????嚗?*
-- [x] esx03 ??9.1嚗ONNECTED嚗SAN green嚗?- [x] esx02 ??9.1嚗SXi 9.1.0 build-25433460嚗xit MM OK嚗?- [x] esx04 ??9.1嚗?.1.0 build-25433460嚗M Disabled嚗esync 0嚗?- [x] esx01 ??9.1嚗???vCenter嚗?敺?嚗???
-- [x] **4 ?啣??9.1.0 build-25433460嚗ONNECTED嚗M Disabled嚗SAN green**
+## ESXi ×4 (Broadwell CPU 繞過)
+- [x] 驗證配方可行（esxi9-cputest 開機成功）
+- [x] **發現：profile-update 路徑升 9.1 在 Broadwell 上「不需」allowLegacyCPU（esx03 實證開機成功）**
+- [x] esx03 → 9.1（CONNECTED，vSAN green）
+- [x] esx02 → 9.1（ESXi 9.1.0 build-25433460，exit MM OK）
+- [x] esx04 → 9.1（9.1.0 build-25433460，MM Disabled，resync 0）
+- [x] esx01 → 9.1（跑新 vCenter，最後升，成功）
+- [x] **4 台全部 9.1.0 build-25433460，CONNECTED，MM Disabled，vSAN green**
 
-## NSX (Part 2) ??? vCenter 9.1 敺?- [x] **NSX Finalize Upgrade ??SUCCESS**嚗Center 9.1 敺?gate 閫?嚗?- [x] **NSX ? = 9.1.0.0100.25470810**嚗P/HOST/EDGE/FINALIZE ??SUCCESS嚗?
-## ?? ??摰? (2026-07-13)
-- NSX 9.1.0.0100.25470810 繚 vCenter 9.1.0.0100 build 25417926 繚 ESXi ?4 9.1.0 build-25433460 繚 vSAN green
+## NSX (Part 2) — 需 vCenter 9.1 後
+- [x] **NSX Finalize Upgrade → SUCCESS**（vCenter 9.1 後 gate 解除）
+- [x] **NSX 版本 = 9.1.0.0100.25470810**（MP/HOST/EDGE/FINALIZE 全 SUCCESS）
 
-## ?嗅偏
-- [ ] 憭 extension (LCM/SDDC/NSX) ??vCenter ??敺??啗酉??- [ ] ?湧? fleet ?亙熒撽?嚗RS/vCLS/vSAN/NSX/vCenter嚗?- [x] 鈭支??辣?湔嚗oc\*.docx嚗?芸?嚗?- [ ] 鈭支??辣?湔?唳?蝯???- [ ] ?其? github.com/kostenyang/v8tov9嚗?蝣?placeholder嚗?
-> ??嚗x] 摰??[~] ?脰?銝准[ ] 敺齒
+## 🎉 升級完成 (2026-07-13)
+- NSX 9.1.0.0100.25470810 · vCenter 9.1.0.0100 build 25417926 · ESXi ×4 9.1.0 build-25433460 · vSAN green
+- [x] 推 github.com/kostenyang/v8tov9 (42abff0)
 
+## 🔌 Lab 關機 / 開機
+- [x] 乾淨關機（vSAN reboot_helper prepare → MM noAction → poweroff，4 台 off）
+- [~] **開機中 (2026-07-15)**
+  - [x] Xindian .32 開 4 台 nested ESXi VM（ping 通）
+  - [ ] 直接連 host /sdk 啟 SSH（vCenter 關著、SSH reboot 後關）
+  - [ ] `reboot_helper.py recover`（任一 host）
+  - [ ] 4 台 exit MM
+  - [ ] 開 vc01-9、vCLS 自動起、DRS 恢復、vSAN green
+
+## 📸 文件補圖（使用者：升級文件圖片有缺）
+- [ ] 開機後重新截圖補足升級各階段（NSX / vCenter 9.1 / ESXi 9.1 / vSAN），更新 docx
+
+## ⏭ 下一階段（媒體下載後）
+- [ ] 部署 VCF Operations / VCF Installer / License Server
+
+## 收尾
+- [ ] 外部 extension (LCM/SDDC/NSX) 於 vCenter 升級後重新註冊
+- [ ] 整體 fleet 健康驗證（DRS/vCLS/vSAN/NSX/vCenter）
+- [x] 交付文件更新到最終狀態（doc\*.docx，11章/5表/4圖）
+- [x] 推上 github.com/kostenyang/v8tov9（密碼 placeholder，commit 42abff0）
+
+## ⏭ 下一階段（等使用者下載媒體後進行）
+使用者下載中：**VCF Operations**、**VCF Installer**、**License Server**。
+- [ ] 部署 VCF Operations（原 Aria/vROps 家族，9.x 的 fleet/維運）
+- [ ] 部署 VCF Installer / VCF Management Services（9.1 取代 9.0 的 Fleet Management Appliance）
+- [ ] 部署 License Server（VCF 9.1 授權集中管理）
+- 目前基礎已就緒：NSX 9.1 / vCenter 9.1 / ESXi×4 9.1 / vSAN green（SDDC Mgr 仍 5.2.1）
+
+> 圖例：[x] 完成　[~] 進行中　[ ] 待辦

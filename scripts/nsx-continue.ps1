@@ -1,4 +1,4 @@
-﻿param([string]$action='continue',[string]$component='HOST')
+param([string]$action='continue',[string]$component='HOST')
 $ErrorActionPreference='Continue'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;

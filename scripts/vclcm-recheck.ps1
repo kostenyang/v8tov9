@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference='Stop'
+$ErrorActionPreference='Stop'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;
 public class TArc:ICertificatePolicy{public bool CheckValidationResult(ServicePoint s,X509Certificate c,WebRequest r,int p){return true;}}
@@ -23,4 +23,4 @@ foreach($er in $obj.entity_results){
     foreach($iss in $cs.issues){ Write-Host "      - $($iss.default_message)" }
   } }
 }
-if(-not $anyErr){ Write-Host "*** NO ERRORS ??all checks pass ***" }
+if(-not $anyErr){ Write-Host "*** NO ERRORS — all checks pass ***" }

@@ -1,4 +1,4 @@
-﻿param([string]$hostmo, [string]$hostip)
+param([string]$hostmo, [string]$hostip)
 # Upgrade one nested ESXi host to 9.1 with allowLegacyCPU bypass (Broadwell)
 $ErrorActionPreference='Continue'
 $plink="C:\Program Files\PuTTY\plink.exe"; $espw='<VC_ESXI_PASSWORD>'
@@ -64,7 +64,7 @@ $out=& $plink -ssh -batch -pw $espw root@$hostip "esxcli software profile update
 Write-Host (($out|Select-String -NotMatch 'Keyboard-interactive|End of keyboard') -join "`n")
 if($out -match 'could not|Error|failed'){ Write-Host "  profile update ERROR"; }
 
-Write-Host "==== boot.cfg allowLegacyCPU: SKIPPED ??profile-update path boots ESXi 9.1 on Broadwell without it (proven on esx03) ===="
+Write-Host "==== boot.cfg allowLegacyCPU: SKIPPED — profile-update path boots ESXi 9.1 on Broadwell without it (proven on esx03) ===="
 
 Write-Host "==== reboot ===="
 & $plink -ssh -batch -pw $espw root@$hostip "reboot" 2>&1 | Out-Null

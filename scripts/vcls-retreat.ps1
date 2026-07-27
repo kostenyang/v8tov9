@@ -1,4 +1,4 @@
-﻿param([string]$mode='query')  # query | false | true
+param([string]$mode='query')  # query | false | true
 $ErrorActionPreference='Stop'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;

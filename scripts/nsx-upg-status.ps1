@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference='Continue'
+$ErrorActionPreference='Continue'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;
 public class TAnu:ICertificatePolicy{public bool CheckValidationResult(ServicePoint s,X509Certificate c,WebRequest r,int p){return true;}}

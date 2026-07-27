@@ -1,4 +1,4 @@
-﻿param([int]$rounds=6,[int]$interval=25)
+param([int]$rounds=6,[int]$interval=25)
 $ErrorActionPreference='Continue'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;

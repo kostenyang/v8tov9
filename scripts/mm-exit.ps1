@@ -1,4 +1,4 @@
-﻿param([string]$hostmo)
+param([string]$hostmo)
 $ErrorActionPreference='Continue'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;

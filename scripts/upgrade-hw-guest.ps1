@@ -1,4 +1,4 @@
-﻿param([string]$vm,[string]$ver='vmx-20',[string]$gid='vmkernel8Guest',[switch]$hardoff)
+param([string]$vm,[string]$ver='vmx-20',[string]$gid='vmkernel8Guest',[switch]$hardoff)
 $ErrorActionPreference='Stop'
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;
