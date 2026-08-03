@@ -17,7 +17,7 @@
 | 實體 ESXi (外層) | 192.168.110.16 | ESXi 8.0.3 · Xeon E5-2682 v4 (Broadwell) |
 | Nested vCenter (VCF) | 192.168.110.142 | administrator@vsphere.local / <VC_ESXI_PASSWORD> |
 | 新 vCenter appliance (暫時) | 192.168.110.151 | root / <VC_ESXI_PASSWORD> |
-| Nested NSX Manager | 192.168.110.143 | admin / <NSX_PASSWORD>（API basic）|
+| Nested NSX Manager | 192.168.110.143 | admin / <NSX_SDDC_OPS_PASSWORD>（API basic）|
 | Nested ESXi ×4 | 192.168.110.145–148 | root / <VC_ESXI_PASSWORD>（SSH 需先 API 啟用）|
 | SDDC Manager | 192.168.110.141 | — |
 | ADSrv / DNS (kosten.lab) | 192.168.110.1 | — |

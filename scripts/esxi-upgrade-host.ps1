@@ -2,7 +2,7 @@ param([string]$hostmo, [string]$hostip)
 # Upgrade one nested ESXi host to 9.1 with allowLegacyCPU bypass (Broadwell)
 $ErrorActionPreference='Continue'
 $plink="C:\Program Files\PuTTY\plink.exe"; $espw='<VC_ESXI_PASSWORD>'
-$depot="http://192.168.110.200:8000/esxi91-depot/index.xml"
+$depot="/vmfs/volumes/vcf-m01-cl01-ds-vsan01/esxi91-depot/index.xml"
 $profile="ESXi-9.1.0.0100-25433460-standard"
 add-type @"
 using System.Net;using System.Security.Cryptography.X509Certificates;
@@ -59,10 +59,10 @@ else{
   if($r -ne 'success'){ Write-Host "  MM failed, abort"; exit 1 }
 }
 
-Write-Host "==== profile update to 9.1 (--no-hardware-warning) ===="
-$out=& $plink -ssh -batch -pw $espw root@$hostip "esxcli software profile update -d $depot -p $profile --no-hardware-warning" 2>&1
-Write-Host (($out|Select-String -NotMatch 'Keyboard-interactive|End of keyboard') -join "`n")
-if($out -match 'could not|Error|failed'){ Write-Host "  profile update ERROR"; }
+Write-Host "==== profile INSTALL to 9.1 (--ok-to-remove --no-live-install：換掉 NSX-8.0→9.1 VIB，避 datapath live-stop) ===="
+$out=& $plink -ssh -batch -pw $espw root@$hostip "esxcli software profile install -d $depot -p $profile --no-hardware-warning --ok-to-remove --no-live-install --maintenance-mode" 2>&1
+Write-Host (($out|Select-String 'completed successfully|Reboot Required|Error|could not|failed') -join "`n")
+if(-not ($out -match 'completed successfully')){ Write-Host "  profile install ERROR — abort"; exit 1 }
 
 Write-Host "==== boot.cfg allowLegacyCPU: SKIPPED — profile-update path boots ESXi 9.1 on Broadwell without it (proven on esx03) ===="
 

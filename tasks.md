@@ -38,18 +38,38 @@
 
 ## 🔌 Lab 關機 / 開機
 - [x] 乾淨關機（vSAN reboot_helper prepare → MM noAction → poweroff，4 台 off）
-- [~] **開機中 (2026-07-15)**
-  - [x] Xindian .32 開 4 台 nested ESXi VM（ping 通）
-  - [ ] 直接連 host /sdk 啟 SSH（vCenter 關著、SSH reboot 後關）
-  - [ ] `reboot_helper.py recover`（任一 host）
-  - [ ] 4 台 exit MM
-  - [ ] 開 vc01-9、vCLS 自動起、DRS 恢復、vSAN green
+- [x] **開機完成 (2026-07-15)**
+  - [x] Xindian .32 開 4 台 nested ESXi VM
+  - [x] host /sdk 直接啟 SSH（ha-sessionmgr + serviceSystem MoRef）
+  - [x] 4 台 exit MM → `reboot_helper.py recover`（成功）
+  - [x] 開 vc01-9（vim-cmd vmsvc/power.on 1 on esx04）→ vCenter API UP、4 host CONNECTED
+  - [~] 開 nsx01a/sddcm01 + vCLS retreat=true（進行中，等服務起來）
 
-## 📸 文件補圖（使用者：升級文件圖片有缺）
-- [ ] 開機後重新截圖補足升級各階段（NSX / vCenter 9.1 / ESXi 9.1 / vSAN），更新 docx
+## 📸 現有截圖品質差（確認結果）
+- 16/17（hosts-success、finalize）= 全壞，抓到 claude.ai 空白頁
+- 10（mgr-success）= 其實是 MP「失敗」畫面 + 有 Claude debug 橫幅 + 一排雜亂分頁
+- vCenter / ESXi / vSAN 完全沒圖
+- 根因：grab.ps1 PrintWindow 抓前景視窗，常抓錯 tab、沒關 debug 橫幅
 
-## ⏭ 下一階段（媒體下載後）
-- [ ] 部署 VCF Operations / VCF Installer / License Server
+## 🎯 使用者定案計畫（2026-07-15）：整個重裝重升 + 好好截圖 → docx
+媒體：E:\Operations-Appliance-9.1.0.0400.25541561.ova (3.1GB)、E:\Vcf-License-Server-9.1.0.0400.25541557.ova (0.6GB)
+- [x] **① 確認 License Server + VCF Operations 手動裝法（官方）→ 寫成 deploy-ops-license.md**
+  - 順序：Ops 先 → License 後（License 要填 Ops 給的 registration key）
+  - 都用 vCenter OVF 部署（非 ESXi host client）；前置 DNS A+PTR + NTP
+  - License Server VM Domain Name 只填 domain 不填 FQDN（否則授權靜默失敗）
+- [x] **①b 技術確認：VCF Operations 實際部起來 + 設定好（2026-07-28 完成）**
+  - [x] ovftool 探 Ops/License OVA：size、OVF 屬性、依賴（License 需 Ops 的 otk）
+  - [x] 資源確認：叢集 free 145GB/65GHz、vSAN free 2234GB → 夠
+  - [x] 部署法定案：**PowerCLI Import-VApp**（ovftool 裸 `--prop` 對 instance `VMware_Aria_Operations` 網路屬性無效；vi:// 路徑也不穩）
+  - [x] 坑：firstboot 不可打斷（中途 power-cycle → 卡死 25MHz）→ 關機設好 IP → 單次開機
+  - [x] CaSA 初始化：thumbprint → POST /casa/cluster(init) 202 → 輪詢 **INITIALIZED**（TLS 用 curl.exe）
+  - [x] 驗證：admin 登入 OK、版本 9.1.0.0 build 25541561、截乾淨圖（登入頁 + 登入後 setup wizard）
+  - [x] DNS：使用者在 ADSrv 加好 vcf-ops01→.150 / vcf-lic01→.151
+  - [ ] License Server：otk 產生疑似需 Broadcom BSC（`/casa/license/registration-key` 回 500）→ air-gapped 受限，待確認/決定
+- [ ] ② 整個重裝：毀現有 9.1 → Cloud Builder 重新 bringup 5.2.1
+- [ ] ③ 重升 5.2.1 → 9.1（NSX→vCenter→ESXi），每步乾淨截圖（單一分頁、關 debug 橫幅、對的畫面）
+- [ ] ④ 部署 VCF Operations + License Server（截圖）
+- [ ] ⑤ 全部組成完整 docx
 
 ## 收尾
 - [ ] 外部 extension (LCM/SDDC/NSX) 於 vCenter 升級後重新註冊

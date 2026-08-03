@@ -5,7 +5,7 @@ public class TAnu:ICertificatePolicy{public bool CheckValidationResult(ServicePo
 "@
 [System.Net.ServicePointManager]::CertificatePolicy=New-Object TAnu
 [System.Net.ServicePointManager]::SecurityProtocol='Tls12'
-$nsx='192.168.110.143'; $u='admin'; $p='<NSX_PASSWORD>'
+$nsx='192.168.110.143'; $u='admin'; $p='<NSX_SDDC_OPS_PASSWORD>'
 $pair=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$u`:$p"))
 $H=@{Authorization="Basic $pair"}
 function G($path){ try{ return Invoke-RestMethod -Uri "https://$nsx$path" -Headers $H }catch{ Write-Host "  $path -> ERR $($_.Exception.Response.StatusCode.value__)"; return $null } }

@@ -1,0 +1,52 @@
+{
+    "__version": "2.13.0",
+    "__comments": "VCF nested lab: upgrade vcf-m01-vc01 (8.0.3) -> vCenter 9.1 (embedded), migration-based, deployed through the source vCenter onto its own mgmt cluster. Temp IP .151, then reclaims .142.",
+    "new_vcsa": {
+        "vc": {
+            "hostname": "vcf-m01-vc01.kosten.lab",
+            "username": "administrator@vsphere.local",
+            "password": "<VC_ESXI_PASSWORD>",
+            "deployment_network": "SDDC-DPortGroup-VM-Mgmt",
+            "datacenter": [ "vcf-m01-dc01" ],
+            "datastore": "vcf-m01-cl01-ds-vsan01",
+            "target": [ "vcf-m01-cl01" ]
+        },
+        "appliance": {
+            "thin_disk_mode": true,
+            "deployment_option": "small",
+            "name": "vcf-m01-vc01-9"
+        },
+        "os": {
+            "ssh_enable": true
+        },
+        "temporary_network": {
+            "ip_family": "ipv4",
+            "mode": "static",
+            "ip": "192.168.110.151",
+            "prefix": "24",
+            "gateway": "192.168.110.254",
+            "dns_servers": [ "192.168.110.1" ]
+        },
+        "user_options": {
+            "vcdb_migrateSet": "core"
+        }
+    },
+    "source_vc": {
+        "managing_esxi_or_vc": {
+            "hostname": "vcf-m01-vc01.kosten.lab",
+            "username": "administrator@vsphere.local",
+            "password": "<VC_ESXI_PASSWORD>"
+        },
+        "vc_vcsa": {
+            "hostname": "vcf-m01-vc01.kosten.lab",
+            "username": "administrator@vsphere.local",
+            "password": "<VC_ESXI_PASSWORD>",
+            "root_password": "<VC_ESXI_PASSWORD>"
+        }
+    },
+    "ceip": {
+        "settings": {
+            "ceip_enabled": false
+        }
+    }
+}

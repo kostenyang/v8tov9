@@ -6,7 +6,7 @@ public class TAnm:ICertificatePolicy{public bool CheckValidationResult(ServicePo
 "@
 [System.Net.ServicePointManager]::CertificatePolicy=New-Object TAnm
 [System.Net.ServicePointManager]::SecurityProtocol='Tls12'
-$nsx='192.168.110.143'; $u='admin'; $p='<NSX_PASSWORD>'
+$nsx='192.168.110.143'; $u='admin'; $p='<NSX_SDDC_OPS_PASSWORD>'
 $pair=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$u`:$p"))
 $H=@{Authorization="Basic $pair"}
 for($i=0;$i -lt $rounds;$i++){

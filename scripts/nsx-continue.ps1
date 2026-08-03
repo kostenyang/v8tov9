@@ -6,7 +6,7 @@ public class TAnc:ICertificatePolicy{public bool CheckValidationResult(ServicePo
 "@
 [System.Net.ServicePointManager]::CertificatePolicy=New-Object TAnc
 [System.Net.ServicePointManager]::SecurityProtocol='Tls12'
-$nsx='192.168.110.143'; $u='admin'; $p='<NSX_PASSWORD>'
+$nsx='192.168.110.143'; $u='admin'; $p='<NSX_SDDC_OPS_PASSWORD>'
 # form-based session to get XSRF token
 $sess=New-Object Microsoft.PowerShell.Commands.WebRequestSession
 $body="j_username=$u&j_password=$([uri]::EscapeDataString($p))"
