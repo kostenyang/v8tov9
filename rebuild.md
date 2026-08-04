@@ -50,8 +50,23 @@
   - [x] Ops (.150)：Import-VApp → 關機設 IP/root_pw/domain → 單次開機 → CaSA **INITIALIZED**；admin OK；p6-ops-login/p6-ops-dashboard
   - [x] License (.151)：**OVA 簽章 PowerCLI 不信 → 解 OVA 移 .cert/.mf 變 unsigned OVF 再 Import-VApp**；設 hostname/ip/otk(placeholder)/dns/domain → 開機（console "Started License Server Operator"）；p6-lic-console
   - **otk 確認 BSC-gated**（兩環境 /casa/license/registration-key 都 500）→ air-gapped 無法真正註冊；使用者定調「有圖就好」otk 用 placeholder
-- [~] P7 組 docx（含所有乾淨截圖，升級圖為重點）
-- [ ] P8 sanitize（密碼→placeholder，sanitize-and-stage.ps1）→ push github.com/kostenyang/v8tov9（腳本+docx+截圖+rebuild.md）
+- [x] **P7 docx 完成**：doc/VCF-5.2.1-to-9.1-Rebuild-Report.docx（9 章 / 11 圖 / 3 表，build_doc_rebuild.py）
+- [x] **P8 push 完成**：sanitize（密碼→placeholder，leak scan=0）→ push github.com/kostenyang/v8tov9 commit **0d10d7b**（origin/main 已驗證）；77 檔（腳本+json+js+md+docx+截圖）
+
+## 🔁 REBUILD #2（2026-08-04）：使用者要「升級一步一步的 UI 圖」
+第一次重建用 API/CLI 跑升級 → 沒有升級進行中的 UI 圖。使用者要求整個再重裝，這次升 NSX 時每階段截 Upgrade Coordinator UI（headless CDP 已證實能 render UC 頁）。vCenter/ESXi 本質 CLI（Broadwell 擋 vLCM UI），截主控台/CLI。
+- [x] 媒體齊全（CB/NestedESXi/NSX.mub/VCSA ISO/ESXi depot/Ops/License）
+- [x] P1 毀現有 9.1（5 VM 刪）
+- [~] P2 部 nested + CB（執行中）
+- [ ] P3/P4 bringup 5.2.1
+- [x] **P5 升級完成 + 逐步 UI 圖截到**：NSX 9.1.0.0200 / vCenter 9.1.0 25629530 / ESXi×4 9.1.0 25433460 / vSAN green
+  - **NSX 逐步 UI 關鍵方法**：獨立 UC iframe `/upgrade-coordinator/` 在自動化下空白(XSRF)+zh-TW locale 也空白 → **改用 app 內建升級頁 `/nsx/index.html#/app/system/home/upgrade/home/summary`**（headless CDP 英文 locale，關 Welcome 導覽），顯示 UPGRADE SUMMARY 步驟清單（Prepare/MP/Hosts/Edges/Finalize 各自 ✅/In Progress/Complete 徽章）。截圖 up01/up05(MP done)/up06(Host In Progress)/up07(Host done)/up11(全 Complete)
+  - vCenter：VAMI up08（9.1.0.0300）；ESXi：up09 主控台(9.1 on Broadwell E5-2682v4)、up10 host client
+  - 註：MCP 真瀏覽器也能看 UC（過憑證後），但 zh-TW → UC iframe 空白（改英文才行）；且 MCP 截圖存不成檔 → 最終用 headless CDP 存檔
+- [~] P6 Ops+License　- [ ] P7 docx 更新（逐步 UI 圖）　- [ ] P8 push
+
+## ✅✅ 全部完成 2026-08-04（rebuild #1）
+毀→部→bringup 5.2.1→升 9.1（NSX 9.1.0.0200 / vCenter 9.1.0 25629530 / ESXi×4 9.1.0 25433460 / vSAN green）→ Ops(.150 INITIALIZED) + License(.151 部署) → docx → git push 0d10d7b。
 
 ## 已確立的技術點（沿用上次）
 - ESXi 9.1 on Broadwell：profile-update 路徑不需 allowLegacyCPU；depot HTTP serve E:\esxi91-depot

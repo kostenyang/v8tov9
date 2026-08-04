@@ -10,7 +10,7 @@ from docx.oxml import OxmlElement
 
 ROOT = r"C:\Users\mjalan\Documents\vspher8to9"
 SHOTS = os.path.join(ROOT, "shots")
-OUT = os.path.join(ROOT, "doc", "VCF-5.2.1-to-9.1-Rebuild-Report.docx")
+OUT = os.environ.get("DOCX_OUT", os.path.join(ROOT, "doc", "VCF-5.2.1-to-9.1-Rebuild-Report.docx"))
 
 d = Document()
 # 基本樣式
@@ -107,17 +107,19 @@ BULLET('EULA 需「重接受」才生效（首次 acceptance=false）；bundle �
 BULLET('Host 升級前必備修復：nested ESXi VM 原為 otherGuest64 / vmx-14 → MWAIT 關閉 → vCLS（CRX 微 VM）起不來 → DRS 失效 → vLCM 擋 host 進 MM。修法：於 Xindian 將 esx03/esx04 兩台改 guestId=vmkernel8Guest + vHW-20（upgrade-hw-guest.ps1），vCLS 即在其上開機取得 quorum、DRS 恢復。')
 BULLET('靜音 vSAN HCL 健康測試（vsan-silence.ps1），否則 nested 虛擬控制器未認證使 vLCM 以 overall_health_not_green 擋 host MM。')
 BULLET('Finalize 不會被 continue 推進，需 POST /api/v1/upgrade/plan?action=upgrade&component_type=FINALIZE_UPGRADE。')
-FIG('p5-nsx-before-421.png','升級前：NSX Manager 4.2.1')
-FIG('p5-nsx-mp-91.png','NSX MP（Manager）升級完成 → 9.1.0.0200')
-FIG('p5-nsx-host-91.png','NSX Host VIB ×4 升級完成（9.1.0.0200，vSAN resync=0）')
-FIG('p5-nsx-final-91.png','NSX Finalize 完成 → product_version 9.1.0.0200')
+P('以下為 NSX Upgrade Coordinator（System → Upgrade）的逐步實機畫面：',bold=True)
+FIG('up01-nsx-before-421.png','① 升級前：NSX 4.2.1，Upgrade Coordinator 起點（Prepare for Upgrade）',5.5)
+FIG('up05-mp-done.png','② UPGRADE SUMMARY：Prepare ✅、Upgrade NSX Manager ✅（MP 完成，Target 9.1.0.0200.25524170）',5.5)
+FIG('up06-host-progress.png','③ Upgrade Hosts 進行中（右上 “In Progress” 徽章）',5.5)
+FIG('up07-host-done.png','④ Upgrade Hosts ✅（MP + Hosts 完成，Edges/Finalize 待續）',5.0)
+FIG('up11-all-done.png','⑤ 升級完成：“Complete” 徽章，Check Readiness / Prepare / NSX Manager / Hosts / Edges & VNAs / Finalize 全 ✅，版本 9.1.0.0200.25524170',5.0)
 
 # ===== 5 vCenter 升級 =====
 H('5. Phase 5b：vCenter 8.0.3 → 9.1 Migration',1)
 P('以 vcsa-deploy CLI（VCSA 9.1 ISO）執行 migration-based 升級：部署新 9.1 appliance 至暫時 IP .151，遷移組態後自動切換回 .142、關閉舊機。')
 BULLET('旗標：--upgrade-framework legacy（預設 RDU 在 nested DRS 資源驗證卡死）、--skip-product-interop-check；範本 vcsa91-upgrade.json（vcdb_migrateSet=core）。')
 BULLET('precheck exit 0 → 正式 migration 約 50 分完成，所有子任務 SUCCEEDED。')
-FIG('p5-vcenter-91.png','vCenter 9.1.0 build 25629530（migration 後於 .142）')
+FIG('up08-vcenter-vami-91.png','升級後：vCenter VAMI Summary — Version 9.1.0.0300 / Build 25629530，Health 全 Good，SSO Running')
 
 # ===== 6 ESXi 升級 =====
 H('6. Phase 5c：ESXi ×4 → 9.1（Broadwell 繞過）',1)
@@ -127,6 +129,8 @@ BULLET('Broadwell CPU：profile-install/update 路徑開機 ESXi 9.1「不需」
 BULLET('depot 取得：nested host 連本機 HTTP:8080 被 Windows 防火牆擋（無 admin 權限加規則）→ 改將 692MB ESXi 9.1 depot 複製到 vSAN datastore，以本機路徑 -d /vmfs/volumes/.../esxi91-depot/index.xml 升級。')
 BULLET('★ 0200 NSX bundle 特有衝突：host 上的 NSX VIB 為 9.1.0.0200-8.0 flavor（要求 esx-version << 8.1），使 profile update 到 ESXi 9.1 出現 DependencyError；live vib remove 又因 nsx-datapath 使用中失敗。解法：esxcli software profile install ... --ok-to-remove --no-live-install --maintenance-mode，一次移除 ESXi8.0 + NSX-8.0 VIB、裝上 ESXi 9.1 + NSX-9.1 VIB（depot 內含 nsx-*_9.1.0.0100-9.1）。vSAN disk 仍 In CMMDS，無需重加 mock VIB。')
 BULLET('每台升級前以 vCenter 重新啟用 SSH（reboot 後預設關）。')
+FIG('up09-esxi91-console.png','升級後：ESXi 主控台 DCUI — VMware ESXi 9.1.0.0100.25433460 on Intel Xeon E5-2682 v4（Broadwell，VCF9 列 discontinued，本 profile-install 法成功升級並開機）',5.5)
+FIG('up10-esxi-hostclient-91.png','升級後：ESXi Host Client — Hypervisor VMware ESXi 9.1.0.0100.25433460，Processor Broadwell E5-2682 v4',5.5)
 TABLE(['ESXi Host','升級後版本','vSAN'],[
  ['vcf-m01-esx01~04','9.1.0 build 25433460','healthy / resync=0'],
 ])
@@ -138,8 +142,8 @@ P('關鍵技術點：',bold=True)
 BULLET('ovftool 的 --prop 對本 OVA 的網路屬性（屬於 product instance VMware_Aria_Operations）無效 → 改用 PowerCLI Get-OvfConfiguration / Import-VApp 設定；部分字串屬性（root_password/domain）需於「關機狀態」以 ReconfigVM 補設。')
 BULLET('firstboot 絕不可打斷 → 部署時不自動開機，關機設好 IP 後「單次開機」。')
 BULLET('初始化：CaSA API（GET /casa/node/thumbprint → POST /casa/cluster init → 輪詢至 cluster_state=INITIALIZED）；appliance HTTPS 一律用 curl.exe（Windows PowerShell 5.1 的 .NET TLS 無法握手）。')
-FIG('p6-ops-login.png','VCF Operations 登入頁（9.1，已上線）')
-FIG('p6-ops-dashboard.png','登入後：VCF Operations 設定精靈「Congratulations on setting up VCF Operations」')
+FIG('up12-ops-login.png','VCF Operations 登入頁（9.1，已上線）')
+FIG('up12-ops-dashboard.png','登入後：VCF Operations 設定精靈「Congratulations on setting up VCF Operations」')
 
 # ===== 8 License Server =====
 H('8. Phase 6：VCF License Server 部署',1)
@@ -148,7 +152,7 @@ P('關鍵技術點與限制：',bold=True)
 BULLET('OVA 簽章憑證 PowerCLI 不信任 → 解開 OVA、移除 .cert/.mf 成為 unsigned OVF 後再 Import-VApp。')
 BULLET('網路屬性同屬 instance（VCF_License_Server_Appliance），以 Get-OvfConfiguration 設定；hostname/otk 為預設段屬性。')
 BULLET('★ 授權限制（air-gapped）：VCF 9.1 的 License Server「唯一註冊金鑰（otk）」由 VCF Operations 產生，而其產生需先向 Broadcom Business Services Console（BSC，需網際網路）註冊；本無網路 lab 實測 /casa/license/registration-key 回 HTTP 500「Operation failed」。故本環境 License Server 完成「部署 + 開機」，實際授權註冊/分發需 BSC 連線（超出離線 lab 範圍）。')
-FIG('p6-lic-console.png','VCF License Server 開機 — "Started License Server Operator"（.151）')
+FIG('up13-lic-console.png','VCF License Server 開機（.151）')
 
 # ===== 9 附錄 =====
 H('9. 附錄：關鍵腳本',1)

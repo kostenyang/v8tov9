@@ -4,12 +4,15 @@ param(
   [string]$Shot = 'C:\Users\mjalan\Documents\vspher8to9\shots\ops-dashboard.png',
   [switch]$DoLogin,
   [string]$NavAfter = '',
-  [string]$EvalFile = ''
+  [string]$EvalFile = '',
+  [string]$User = 'admin',
+  [string]$Pass = '<NSX_SDDC_OPS_PASSWORD>',
+  [int]$PostWait = 70
 )
 $ErrorActionPreference='Stop'
 $chrome="C:\Program Files\Google\Chrome\Application\chrome.exe"
 $prof="$env:TEMP\cdp-prof"; $port=9222
-$argline="--headless=new --disable-gpu --no-sandbox --ignore-certificate-errors --hide-scrollbars --window-size=1600,900 --remote-debugging-port=$port --user-data-dir=`"$prof`" about:blank"
+$argline="--headless=new --disable-gpu --no-sandbox --ignore-certificate-errors --hide-scrollbars --window-size=1500,1250 --remote-debugging-port=$port --user-data-dir=`"$prof`" about:blank"
 $p = Start-Process -FilePath $chrome -ArgumentList $argline -PassThru -WindowStyle Hidden
 Start-Sleep -Seconds 3
 
@@ -50,16 +53,29 @@ Send-Cdp 'Page.navigate' @{ url=$Url } | Out-Null
 WaitLoad; Start-Sleep -Seconds 4
 
 if($DoLogin){
-  "fill: " + (Eval ([IO.File]::ReadAllText('C:\Users\mjalan\Documents\vspher8to9\js\login-fill.js')))
+  $uEsc = $User -replace "'","\'"; $pEsc = $Pass -replace "'","\'"
+  $fillJs = @"
+(function(){
+  function setVal(el,val){ var d=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set; d.call(el,val); el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true})); }
+  var inputs=[].slice.call(document.querySelectorAll('input'));
+  var u=inputs.find(function(i){return /user|name|email/i.test((i.name||'')+(i.id||'')+(i.getAttribute('formcontrolname')||'')+(i.getAttribute('placeholder')||''));});
+  var p=inputs.find(function(i){return i.type==='password';});
+  if(!u){ u=inputs.filter(function(i){return i.type==='text'||i.type===''||i.type==='email';})[0]; }
+  if(u) setVal(u,'$uEsc');
+  if(p) setVal(p,'$pEsc');
+  return 'u='+(u?'yes':'no')+' p='+(p?'yes':'no')+' inputs='+inputs.length;
+})()
+"@
+  "fill: " + (Eval $fillJs)
   Start-Sleep -Seconds 1
   "click: " + (Eval ([IO.File]::ReadAllText('C:\Users\mjalan\Documents\vspher8to9\js\login-click.js')))
   Start-Sleep -Seconds 10; WaitLoad; Start-Sleep -Seconds 6
   "URL after login: " + (Eval 'location.href')
-  "waiting 70s for dashboard SPA to render..."
-  Start-Sleep -Seconds 70
+  "waiting $PostWait s for SPA to render..."
+  Start-Sleep -Seconds $PostWait
 }
 if($NavAfter){ Send-Cdp 'Page.navigate' @{ url=$NavAfter } | Out-Null; WaitLoad; Start-Sleep -Seconds 6; "URL: " + (Eval 'location.href') }
-if($EvalFile){ "EVAL: " + (Eval ([IO.File]::ReadAllText($EvalFile))) }
+if($EvalFile){ "EVAL: " + (Eval ([IO.File]::ReadAllText($EvalFile))); Start-Sleep -Seconds 10 }
 
 $cap = Send-Cdp 'Page.captureScreenshot' @{ format='png' }
 [IO.File]::WriteAllBytes($Shot,[Convert]::FromBase64String($cap.result.data))
