@@ -119,7 +119,17 @@ H('5. Phase 5b：vCenter 8.0.3 → 9.1 Migration',1)
 P('以 vcsa-deploy CLI（VCSA 9.1 ISO）執行 migration-based 升級：部署新 9.1 appliance 至暫時 IP .151，遷移組態後自動切換回 .142、關閉舊機。')
 BULLET('旗標：--upgrade-framework legacy（預設 RDU 在 nested DRS 資源驗證卡死）、--skip-product-interop-check；範本 vcsa91-upgrade.json（vcdb_migrateSet=core）。')
 BULLET('precheck exit 0 → 正式 migration 約 50 分完成，所有子任務 SUCCEEDED。')
-FIG('up08-vcenter-vami-91.png','升級後：vCenter VAMI Summary — Version 9.1.0.0300 / Build 25629530，Health 全 Good，SSO Running')
+P('vCenter migration 逐步（vcsa-deploy 各階段實際執行結果）：',bold=True)
+TABLE(['#','階段 / Task','說明','結果'],[
+ ['1','Stage 1：部署新 9.1 appliance','OVF Transfer → Power On，暫時 IP 192.168.110.151','完成'],
+ ['2','Install required RPMs','在新 appliance 安裝所需 RPM','SUCCEEDED 100/100'],
+ ['3','Run appliance precheck','升級前檢查','SUCCEEDED 100/100'],
+ ['4','Export existing appliance data','從舊 8.0.3 匯出組態/資料','SUCCEEDED 100/100'],
+ ['5','Run firstboot scripts','新 appliance firstboot 起各服務','SUCCEEDED 100/100'],
+ ['6','Import data into appliance','把資料匯入新 9.1 appliance','SUCCEEDED 100/100'],
+ ['7','IP 切換 + 收尾','.151→.142、舊機關機、評估模式','Successfully completed'],
+])
+FIG('up08-vcenter-vami-91.png','升級後（結果驗證）：vCenter VAMI Summary — Version 9.1.0.0300 / Build 25629530，Health 全 Good，SSO Running')
 
 # ===== 6 ESXi 升級 =====
 H('6. Phase 5c：ESXi ×4 → 9.1（Broadwell 繞過）',1)
