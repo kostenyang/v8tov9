@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+ body{margin:0;background:#fff;font-family:"Microsoft JhengHei",sans-serif;color:#1f3864}
+ .wrap{width:1180px;padding:26px 34px}
+ h1{font-size:23px;margin:0 0 14px}
+ .term{background:#0f1b2d;border-radius:10px;padding:16px 20px;font-family:Consolas,monospace;font-size:13.5px;line-height:1.5;color:#d6e2f0;white-space:pre}
+ .g{color:#66d19e}.c{color:#7f8ea3}.y{color:#e6c34a}.b{color:#57b0ff}
+ .cap{margin-top:12px;font-size:13.5px;color:#555}
+</style></head><body><div class="wrap">
+ <h1>升級進行中（RDU 兩階段，實際 log）</h1>
+ <div class="term"><span class="c">[Stage 1] 部署新 9.1 appliance（暫時 IP 10.0.0.113）</span>
+Starting the ova transfer ... VMware-vCenter-Server-Appliance-9.1.0.0.25370922_OVF10.ova
+<span class="b">Invoking RDU Init API</span>  →  RDU Initialised successfully
+<span class="b">Invoking RDU Apply API</span> →  RDU is running
+
+<span class="c">[Stage 2] 遷移資料 + 切換接管（RDU 子任務）</span>
+  • target_deployment ............... 部署目標新機
+  • prepare / expand_configuration .. 準備、展開組態
+  • source_switchover / transfer_target . 來源切換、傳資料
+  • target_switchover / starting_services . <span class="y">新機接管 10.0.0.112、啟動服務</span>
+  • contract / removing_old_data .... 收尾、移除舊資料
+  • switchover ........... RUNNING → <span class="g">DONE</span>
+
+<span class="g">RDU upgrade has completed successfully</span>
+<span class="g">Upgrade has passed successfully</span>
+    System Name: vc8test.home.lab
+    System IP:   10.0.0.112</div>
+ <div class="cap">↑ RDU 先在暫時 IP 部好新 9.1、同步資料，最後一刻才「切換」接管來源 IP，故對外停機極短。舊 8.0.3 機在收尾後自動關閉（保留可回滾）。</div>
+</div></body></html>

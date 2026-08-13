@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+ body{margin:0;background:#fff;font-family:"Microsoft JhengHei",sans-serif;color:#1f3864}
+ .wrap{width:1180px;padding:26px 34px}
+ h1{font-size:23px;margin:0 0 14px}
+ .term{background:#0f1b2d;border-radius:10px;padding:16px 20px;font-family:Consolas,monospace;font-size:14px;line-height:1.5;color:#d6e2f0;white-space:pre}
+ .p{color:#57b0ff}.g{color:#66d19e}.y{color:#e6c34a}.c{color:#7f8ea3}.k{color:#ff9d5c}
+ .cap{margin-top:12px;font-size:13.5px;color:#555}
+</style></head><body><div class="wrap">
+ <h1>執行升級：vcsa-deploy upgrade（CLI，兩階段 migration / RDU）</h1>
+ <div class="term"><span class="c"># 掛載 9.1 安裝器 ISO 後，用 vcsa-deploy upgrade + JSON 範本</span>
+<span class="p">PS&gt;</span> G:\vcsa-cli-installer\win32\vcsa-deploy.exe <span class="k">upgrade</span> vc8-to-91-upgrade.json `
+        --accept-eula --no-ssl-certificate-verification
+
+<span class="c"># JSON 範本關鍵段（templates\upgrade\vcsa8.0\embedded_vCSA_on_VC.json）</span>
+"new_vcsa": {
+  "vc":   { "hostname":"10.0.0.101", "datastore":"SSD2",
+            "target":["Cluster","10.0.0.97"] },          <span class="c"># 新機部這</span>
+  "appliance": { "deployment_option":"tiny", "name":"vc8test-9" },
+  "<span class="y">temporary_network</span>": { "ip":"<span class="g">10.0.0.113</span>", "prefix":"23" },  <span class="c"># 暫時 IP</span>
+  "user_options": { "vcdb_migrateSet":"<span class="y">core</span>" }        <span class="c"># 遷移：組態+清單</span>
+},
+"<span class="y">source_vc</span>": {
+  "managing_esxi_or_vc": { "hostname":"10.0.0.101" },     <span class="c"># 管來源的 vC</span>
+  "vc_vcsa": { "hostname":"<span class="g">10.0.0.112</span>",                  <span class="c"># 來源 vc8test 8.0.3</span>
+               "username":"administrator@vsphere.local" }
+}</div>
+ <div class="cap">↑ 一條指令啟動全自動兩階段升級。<b>vcdb_migrateSet</b> 可選 core / core_events_tasks / all（本例 core 最快）。實際執行時系統採 <b>RDU（Reduced Downtime Upgrade）</b>，停機時間壓到最短。</div>
+</div></body></html>
