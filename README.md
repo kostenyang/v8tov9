@@ -2,6 +2,9 @@
 
 手動把一套 nested **VCF 5.2.1**（vSphere 8.0.3 + NSX 4.2.1）逐元件升到 **9.1**，跑在 **Broadcom 官方已列為 discontinued 的 Broadwell CPU**（Xeon E5-2682 v4）上。脫離 SDDC Manager LCM，純手動 CLI / API / UI，全程實測記錄。
 
+
+> 📌 **第二輪（2026-08-19）另走「客戶情境」路線** —— 客戶沒有 SDDC Manager、也沒有 NSX，改用 **RDU（Reduced Downtime Upgrade）** 升 vCenter，並要接 VCF Operations / License Server 授權。過程與新踩到的坑在 **[customer-vvf-no-sddcm.md](customer-vvf-no-sddcm.md)**（含 ★ *RDU switchover 被 NSX 4.2.1 無限期擋住、且看不出錯誤* 的完整診斷）。
+
 ## ✅ 結果：升級全部完成
 
 | 元件 | 前 → 後 | 狀態 |
@@ -163,6 +166,7 @@ reboot
 
 | 檔案 | 用途 |
 |------|------|
+| [`customer-vvf-no-sddcm.md`](customer-vvf-no-sddcm.md) | ★ **第二輪**：客戶情境（無 SDDC Manager / 無 NSX）用 **RDU** 升 vCenter —— RDU switchover 被 NSX 版本硬擋的診斷、正常移除 NSX/SDDC Manager 的順序、8.0U3 disable Supervisor 的正確 API |
 | [`doc/VCF-5.2.1-to-9.1-Manual-Upgrade.docx`](doc/) | **完整交付文件**（11 章、5 表、4 圖，含截圖）|
 | [`plan.md`](plan.md) / [`context.md`](context.md) / [`tasks.md`](tasks.md) | 目標範圍 / 決策與環境 / checkbox 進度 |
 | [`scripts/esxi-upgrade-host.ps1`](scripts/esxi-upgrade-host.ps1) | ESXi 逐台升級（MM → profile update → reboot → 退 MM）|
