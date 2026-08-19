@@ -199,15 +199,43 @@ $e.software.profile.update.Invoke($u)
 
 ---
 
-## 本輪狀態
+## 實測時間軸（vCenter 8.0U3 → 9.1，RDU）
+
+| 時間 | 事件 |
+|---|---|
+| 19:02 | `vcsa-deploy upgrade` 送出（RDU）；precheck SUCCEEDED |
+| ~19:1x | 新 appliance 部署完成、temp IP 上線（nested vSAN 上 OVA 上傳沒卡） |
+| 20:22 | 進入 `SWITCHOVER` 狀態 —— 但 **BLOCKED**，DB/file replication 已 remaining=0 |
+| 20:22–22:55 | **卡在 NSX 閘門 2.5 小時**（`vlcm.log` 每 60 秒重查 `NSX < 9.1.0`）；期間 CLI 逾時退出並誤報 `Upgrade of VC has failed` |
+| 22:48 | 4 台 host `unprepare_host=true` 完成（NSX VIB 卸除） |
+| 22:55 | compute manager 刪除成功（inventory 延遲，重試 4 次） |
+| **22:57** | `NSX upgrade complete` → `StopServicesBeforeSwitchover` **閘門放行、switchover 開始** |
+| **23:08** | `.56` 以 **vCenter 9.1.0 build 25417926** 回應 ✅ |
+
+> 從移除 NSX 註冊到 switchover 啟動只花 **~2 分鐘**（等下一輪 60 秒檢查）。
+
+## 升級後狀態（客戶情境的起點）
+
+```
+vCenter .56      = 9.1.0 build 25417926      ✅
+ESXi ×4          = 8.0.3 build 24280767      Connected（9.1 vCenter 管 8.0U3 host，正常）
+cluster          = HA/DRS 正常，vSAN datastore free 2218GB
+extensions       = 無 NSX / 無 SDDC Manager / 無 VCF client   ✅ 乾淨的 vSphere 樣貌
+授權              = Product Evaluation (edition=eval)   ← 客戶升級後的真實處境
+```
+
+**→ 這就是為什麼要接 VCF Operations + License Server**：VCF 9.x 起授權不在 vCenter 裡貼 key，
+沒接上這條鏈，升完就是 evaluation。部署 SOP 見 [deploy-ops-license.md](deploy-ops-license.md)。
+
+## 本輪進度
 
 | 步驟 | 狀態 |
 |---|---|
-| 移除 Supervisor / spherelet | ✅ |
+| 移除 Supervisor / spherelet（解 KB412010） | ✅ |
 | 移除 vSphere Replication / SRM（先 unregister extension 再刪 VM） | ✅ |
 | 正常移除 NSX（TNC → TN unprepare → TNP → CM） | ✅ |
 | 移除 SDDC Manager（關機 + unregister extension） | ✅ |
-| vCenter 8.0U3 → 9.1（RDU） | 🔄 switchover 進行中（NSX 閘門解除後自動開始） |
+| **vCenter 8.0U3 → 9.1（RDU）** | ✅ **9.1.0 b25417926** |
 | baseline → image 轉換 | ⏳ |
 | ESXi ×4 → 9.1（esxcli 手升） | ⏳ |
-| VCF Operations + License Server 授權認證 | ⏳ 見 [deploy-ops-license.md](deploy-ops-license.md) |
+| VCF Operations + License Server 授權認證 | ⏳ |
