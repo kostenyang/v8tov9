@@ -208,7 +208,8 @@ profile update: "The update completed successfully..."  170 裝 / 126 移
 
 - ✅ **10GB boot disk / 1GB bootbank 真的塞得下 9.1**（dry-run 與實際寫入都過）
 - ✅ **Broadwell（E5-2620 v4）不受支援 CPU 靠 `--no-hardware-warning` 過關**
-- ⚠️ **重開後 `activating: vsan` 要等 35-40 分鐘**（nested vSAN）。期間 **ping 通但 443/22/902 全關、vCenter 顯示 NotResponding**，很像掛掉 —— 實際只是慢。
+- ⚠️ **第一台重開後 `activating: vsan` 要等 35-40 分鐘**（nested vSAN 冷啟）。期間 **ping 通但 443/22/902 全關、vCenter 顯示 NotResponding**，很像掛掉 —— 實際只是慢。
+  **後續三台各只要 ~12 分鐘**（cluster 已在線，vSAN 直接 join）→ 所以「第一台特別久」是正常現象，不要因此中止。
   用 console 截圖確認：`(Get-View $vm).CreateScreenshot_Task()` → 從 datastore 下載 PNG，看到
   `VMware ESXi 9.1.0.0.25370933 (Release Build)` + `activating: vsan` 就安心等，**不要重開機**。
 
@@ -258,5 +259,5 @@ extensions       = 無 NSX / 無 SDDC Manager / 無 VCF client   ✅ 乾淨的 v
 | 移除 SDDC Manager（關機 + unregister extension） | ✅ |
 | **vCenter 8.0U3 → 9.1（RDU）** | ✅ **9.1.0 b25417926** |
 | baseline → image 轉換 | ⏳ |
-| ESXi ×4 → 9.1（esxcli 手升） | 🔄 **esx04 ✅ 9.1.0 b25370933**；其餘 3 台依序進行中 |
-| VCF Operations + License Server 授權認證 | ⏳ |
+| ESXi ×4 → 9.1（esxcli 手升） | ✅ **4 台全 9.1.0 b25370933**、vSAN 4 members 健康 |
+| VCF Operations + License Server 授權認證 | 🔄 進行中（IP/DNS 已備妥：ops `.131` / lic `.132`） |
