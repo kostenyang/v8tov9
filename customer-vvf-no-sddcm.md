@@ -197,6 +197,27 @@ $e.software.profile.update.Invoke($u)
 - 意外的好消息：**boot disk 只 10GB / bootbank 各 1024MB（free 617MB）的 nested host，dry-run 一樣通過**
   （`BootBankInstaller, LockerInstaller`、170 VIB 裝 / 175 移 / 0 skipped），沒有撞到「ESXi 9 需要 32GB boot device」的硬牆。
 
+
+### 實測（2026-08-20，第一台 esx04）
+
+```
+8.0.3-24280767 → 9.1.0 build 25370933   Connected
+vSAN members=4 state=AGENT ／ nsx-host vib 4.2.1.0.0-8.0.x → 9.1.0.0-9.1.25318226
+profile update: "The update completed successfully..."  170 裝 / 126 移
+```
+
+- ✅ **10GB boot disk / 1GB bootbank 真的塞得下 9.1**（dry-run 與實際寫入都過）
+- ✅ **Broadwell（E5-2620 v4）不受支援 CPU 靠 `--no-hardware-warning` 過關**
+- ⚠️ **重開後 `activating: vsan` 要等 35-40 分鐘**（nested vSAN）。期間 **ping 通但 443/22/902 全關、vCenter 顯示 NotResponding**，很像掛掉 —— 實際只是慢。
+  用 console 截圖確認：`(Get-View $vm).CreateScreenshot_Task()` → 從 datastore 下載 PNG，看到
+  `VMware ESXi 9.1.0.0.25370933 (Release Build)` + `activating: vsan` 就安心等，**不要重開機**。
+
+### 兩個餵 depot 的坑
+| 坑 | 症狀 | 修法 |
+|---|---|---|
+| `Get-EsxCli` 經 vCenter 的 **5 分鐘 channel timeout** | `The request channel timed out attempting to send after 00:05:00`，而且**host 端也沒完成**（profile 仍是 8.0U3） | `Set-PowerCLIConfiguration -WebOperationTimeoutSeconds 3600` |
+| HTTP index.xml depot 在真跑 update 時不穩 | host 回 `[MetadataDownloadError] … urlopen error timed out` | 把 zip 上傳到 datastore 用**本地路徑** `/vmfs/volumes/<ds>/depot/…zip`（dry-run 用 HTTP 方便，真跑用本地） |
+
 ---
 
 ## 實測時間軸（vCenter 8.0U3 → 9.1，RDU）
@@ -237,5 +258,5 @@ extensions       = 無 NSX / 無 SDDC Manager / 無 VCF client   ✅ 乾淨的 v
 | 移除 SDDC Manager（關機 + unregister extension） | ✅ |
 | **vCenter 8.0U3 → 9.1（RDU）** | ✅ **9.1.0 b25417926** |
 | baseline → image 轉換 | ⏳ |
-| ESXi ×4 → 9.1（esxcli 手升） | ⏳ |
+| ESXi ×4 → 9.1（esxcli 手升） | 🔄 **esx04 ✅ 9.1.0 b25370933**；其餘 3 台依序進行中 |
 | VCF Operations + License Server 授權認證 | ⏳ |
