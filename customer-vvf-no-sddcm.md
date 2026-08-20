@@ -213,11 +213,103 @@ profile update: "The update completed successfully..."  170 裝 / 126 移
   用 console 截圖確認：`(Get-View $vm).CreateScreenshot_Task()` → 從 datastore 下載 PNG，看到
   `VMware ESXi 9.1.0.0.25370933 (Release Build)` + `activating: vsan` 就安心等，**不要重開機**。
 
+  ![esx04 開機停在 activating: vsan](screenshots-round2/06-esx04-esxi91-activating-vsan.png)
+
 ### 兩個餵 depot 的坑
 | 坑 | 症狀 | 修法 |
 |---|---|---|
 | `Get-EsxCli` 經 vCenter 的 **5 分鐘 channel timeout** | `The request channel timed out attempting to send after 00:05:00`，而且**host 端也沒完成**（profile 仍是 8.0U3） | `Set-PowerCLIConfiguration -WebOperationTimeoutSeconds 3600` |
 | HTTP index.xml depot 在真跑 update 時不穩 | host 回 `[MetadataDownloadError] … urlopen error timed out` | 把 zip 上傳到 datastore 用**本地路徑** `/vmfs/volumes/<ds>/depot/…zip`（dry-run 用 HTTP 方便，真跑用本地） |
+
+
+---
+
+## VCF Operations 9.1 部署 + 初始化（全 API，不進瀏覽器精靈）
+
+### ★ 正確順序（三次失敗換來的）
+```
+1. 部 OVA（PowerCLI Import-VApp + Get-OvfConfiguration）→ 開機一次
+2. 等 firstboot **完全**結束
+3. 取 appliance 自身憑證的 SHA-1 thumbprint（冒號大寫）
+4. POST /casa/node/master   ← admin_password 就在這個 body 裡
+5. 輪詢 /casa/cluster/status 與 /casa/sysadmin/cluster/online_state
+```
+
+| 踩到的錯 | 訊息 | 原因 / 修法 |
+|---|---|---|
+| 先單獨設密碼 | `fresh.node.validation.failed: Specified node is already configured.` | ❌ **不要**先呼叫 `PUT /casa/security/adminpassword/initial`，那會把節點標記成「已配置」，而 CaSA **沒有 reset 端點 → 只能重部**。密碼是 `node/master` 的 body 欄位 |
+| 太早呼叫 | `firstboot.validation.unknown: Specified node firstboot is in unknown state.` | CaSA 回 **401 不代表就緒**（只代表 web 起來了）。firstboot 沒跑完就打會失敗 |
+| 少帶 thumbprint | `thumbprint.chain.validation.failed` | body 需要 `thumbprint`＝appliance 自己 TLS 憑證的 SHA-1（`CN=VCFOps-slice-1`），格式 `AA:BB:…` |
+| ✅ 成功 | HTTP **202** | `{admin_password, ntp_servers[], name, thumbprint, init:true, "dry-run":false}` |
+
+- **appliance 自帶 API 文件**：`https://<ops-fqdn>/casa/api-guide.html`（含每個端點的 request body 範例）。
+  9.1 的 CaSA 端點與 vROps 8.x **差很多**：`/casa/node/master`、`/casa/cluster/init`、`/casa/cluster/status`、`/casa/sysadmin/cluster/online_state`；
+  照舊版猜的 `/casa/deployment/cluster/initial` 一律 404。
+- 判定「已上線」：`/casa/sysadmin/cluster/online_state` → `cluster_online_state_snapshot: ONLINE`。
+  ⚠️ **`/suite-api/api/versions` 回 401 不是故障** —— suite-api 走 token 認證（`POST /suite-api/api/auth/token/acquire` → `Authorization: vRealizeOpsToken <token>`），不吃 basic auth。
+
+## License Server 部署：OVF 屬性巢狀順序的陷阱
+
+同一版 VCF 的兩支 appliance，PowerCLI `Get-OvfConfiguration` 的 product-instance 巢狀順序**相反**：
+
+| Appliance | 路徑 |
+|---|---|
+| Operations | `Common.`**`VMware_Aria_Operations`**`.ip0.Value`（instance → 屬性） |
+| License Server | `Common.ip0.`**`VCF_License_Server_Appliance`**`.Value`（**屬性 → instance**） |
+
+**填錯不會報錯**：OVA 照樣部署成功、VM 照樣開機，只是永遠沒有 IP、CPU 掉到 20-40MHz 閒置、40 分鐘毫無反應。
+→ **開機前一定要把 vApp 屬性逐項印出來核對**（`(Get-View $vm).Config.VAppConfig.Property`），這是唯一能及早發現的方法。
+
+其他：
+- `otk` = **Unique Registration Key**（必填，從 Ops 的 Add License Server 頁取得）；`api_key` 官方說留空即可
+- OTK 內容是 base64 JSON：`{otp:{enrollment_passphrase,expire_date}, uuid, hosts:[<ops-fqdn>], ca:<PEM>, type:"LICENSE_SERVER"}`，**約 26 小時到期**、UI 上可 refresh 重產
+- 產生 key 的 API（需 UI session，basic auth / suite-api token 都只會拿回登入頁）：
+  `GET /vcf-operations/rest/ops/internal/extension/vcf-license-cloud-integration/license-servers/otk`
+- 屬性填對後：開機 **1 分鐘 ping 通、4 分鐘 443 回應**
+
+## 🔑 授權是功能開關，不是事後合規
+
+在 Ops 用 suite-api 建立 vCenter adapter：
+
+```
+POST /suite-api/api/adapters                              → ✅ 建立成功
+PUT  /suite-api/api/adapters/{id}/monitoringstate/start   → ⛔ HTTP 403
+  "Unable to process request due to license issues. Adapter … has no any VCF license."
+```
+
+> **沒有有效 VCF 授權，VCF Operations 連 vCenter 的資料都不能開始收。**
+> 客戶把 vSphere 升到 9.x 之後，BSC → Operations → License Server → 指派授權這條鏈是**必要路徑**，
+> 不接的話：vCenter 是 `Product Evaluation`，**而且 Operations 監控也起不來**。
+
+### suite-api 建 vCenter adapter 的正確 payload（試三次才對）
+| 症狀 | 修正 |
+|---|---|
+| 400 `may not be empty: name / adapterKindKey` | 這兩個要放 **request 頂層**，不是包在 `resourceKey`（8.x 舊寫法） |
+| 400 `Invalid input format` | `resourceIdentifiers` 要用**陣列** `[{name,value}]`，不是 map |
+| ✅ | 頂層 `name`/`adapterKindKey=VMWARE`/`collectorId`/`monitoringInterval` + 陣列 identifiers（`VCURL`/`AUTODISCOVERY`/`PROCESSCHANGEEVENTS`）+ `credential{credentialKindKey=PRINCIPALCREDENTIAL, fields[USER,PASSWORD]}` |
+
+## Disconnected 模式的註冊流程（實機 8 步）
+
+離線環境（Ops 連不到 `vcf.broadcom.com`）會自動走 **Disconnected**，UI: `Manage → Licensing → Licenses & Registration → Registration`：
+
+| # | 步驟 | 在哪做 |
+|---|---|---|
+| 1 | **Add a License Server** | Ops（OTK → 部 License Server → 自動回報） |
+| 2 | **Select Connection Mode** | Ops（離線自動判定 Disconnected） |
+| 3 | **Download Registration File** | Ops |
+| 4 | Import Registration File → 取得 **verification file** | **VCF Business Services console（雲端，需 Site ID）** |
+| 5 | **Import Verification File** | Ops |
+| 6 | **Download Confirmation File** | Ops |
+| 7 | Upload Confirmation File + 加授權 → 取得 **license file** | **BSC（雲端）** |
+| 8 | **Import License File** → 之後才能把授權指派給 vCenter | Ops |
+
+→ **4/5/7/8 都繞不開 Broadcom 帳號**。離線客戶要先確認有可用訂閱與 Site ID，否則整條鏈停在第 3 步。
+
+![Ops 登入](screenshots-round2/01-ops-login.jpg)
+![Licenses & Registration 三步總覽](screenshots-round2/02-ops-licenses-registration-0of3.jpg)
+![Registration 2 of 8：License Server 已完成](screenshots-round2/07-ops-registration-2of8-top.jpg)
+![Disconnected 模式完整 8 步](screenshots-round2/08-ops-registration-disconnected-8steps.jpg)
+![升級後的 vCenter 9.1](screenshots-round2/04-vcenter-login.jpg)
 
 ---
 
@@ -260,4 +352,7 @@ extensions       = 無 NSX / 無 SDDC Manager / 無 VCF client   ✅ 乾淨的 v
 | **vCenter 8.0U3 → 9.1（RDU）** | ✅ **9.1.0 b25417926** |
 | baseline → image 轉換 | ⏳ |
 | ESXi ×4 → 9.1（esxcli 手升） | ✅ **4 台全 9.1.0 b25370933**、vSAN 4 members 健康 |
-| VCF Operations + License Server 授權認證 | 🔄 進行中（IP/DNS 已備妥：ops `.131` / lic `.132`） |
+| VCF Operations 9.1 部署 + 叢集上線 | ✅ `.131` ONLINE |
+| License Server 部署 + 註冊到 Ops | ✅ `.132`，Ops 顯示 *1 License server added* |
+| vCenter adapter 建立 | ✅ 已建，但 **啟動被 403 授權閘門擋住** |
+| BSC 註冊 → 取得授權 → 指派給 vCenter | ⛔ 需 Broadcom Site ID / 訂閱（disconnected 第 4 步之後） |
