@@ -267,9 +267,9 @@ profile update: "The update completed successfully..."  170 裝 / 126 移
   `GET /vcf-operations/rest/ops/internal/extension/vcf-license-cloud-integration/license-servers/otk`
 - 屬性填對後：開機 **1 分鐘 ping 通、4 分鐘 443 回應**
 
-## 🔑 授權是功能開關，不是事後合規
+## 🔑 授權的真實影響：拿得到拓撲，拿不到指標
 
-在 Ops 用 suite-api 建立 vCenter adapter：
+用 suite-api 建立 vCenter adapter 後啟動收集：
 
 ```
 POST /suite-api/api/adapters                              → ✅ 建立成功
@@ -277,9 +277,31 @@ PUT  /suite-api/api/adapters/{id}/monitoringstate/start   → ⛔ HTTP 403
   "Unable to process request due to license issues. Adapter … has no any VCF license."
 ```
 
-> **沒有有效 VCF 授權，VCF Operations 連 vCenter 的資料都不能開始收。**
-> 客戶把 vSphere 升到 9.x 之後，BSC → Operations → License Server → 指派授權這條鏈是**必要路徑**，
-> 不接的話：vCenter 是 `Product Evaluation`，**而且 Operations 監控也起不來**。
+**但改用 UI（Integrations → Accounts → ⋮ → Start Collecting）可以啟動**，狀態變 **Warning**（不是 Stopped），
+而且實際開始收集。啟動後查 `GET /suite-api/api/adapters/{id}`：
+
+| 指標 | 值 |
+|---|---|
+| `numberOfResourcesCollected` | > 0（該 adapter 收到 **33 個 vSphere 物件**：Datacenter / HostSystem ×4 / VirtualMachine / VMFolder / DVPG） |
+| **`numberOfMetricsCollected`** | **0** ← 關鍵 |
+| Licensing 資源 | 出現 **`Unlicensed Group`** |
+
+> **給客戶的正確結論**：升到 9.x 後沒接授權 —— vCenter 是 `Product Evaluation`；
+> VCF Operations **看得到環境拓撲，但收不到效能指標**，adapter 長期掛 Warning。
+> 要拿到真正的監控價值，仍必須走 **BSC → Operations → License Server → 指派授權**。
+> （API 路徑更嚴格：`monitoringstate/start` 直接被 403 擋，UI 路徑則以 Warning 放行。）
+
+### UI 加 vCenter 帳戶（可沿用 API 建好的憑證，不必重打密碼）
+1. Home → vCenter 卡片 → **ADD ACCOUNT**（或 Administration → Integrations → ADD）→ Account Types 選 **vCenter**
+2. 填 Name 與 vCenter FQDN；**Credential 下拉可直接選 API 先前建立的憑證**
+3. **VALIDATE CONNECTION** → 跳 **Review and Accept Certificate**（vCenter VMCA 憑證）→ ACCEPT → `Test connection successful.`
+4. **ADD** → 提示「新建立的 vCenter 帳戶**不會自動開始收集**」→ 要在清單用 ⋮ → **Start Collecting**
+5. 帳戶清單的 Version 欄位會自動抓到 `9.1.0.0100`（＝連線正常）
+
+![Add Account - vCenter 表單](screenshots-round2/09-ops-add-account-vcenter-form.jpg)
+![接受 vCenter 憑證](screenshots-round2/10-ops-accept-vcenter-cert.jpg)
+![Test connection successful](screenshots-round2/11-ops-test-connection-successful.jpg)
+![帳戶清單：Start Collecting 後為 Warning](screenshots-round2/12-ops-vcenter-accounts-warning.jpg)
 
 ### suite-api 建 vCenter adapter 的正確 payload（試三次才對）
 | 症狀 | 修正 |
@@ -354,5 +376,5 @@ extensions       = 無 NSX / 無 SDDC Manager / 無 VCF client   ✅ 乾淨的 v
 | ESXi ×4 → 9.1（esxcli 手升） | ✅ **4 台全 9.1.0 b25370933**、vSAN 4 members 健康 |
 | VCF Operations 9.1 部署 + 叢集上線 | ✅ `.131` ONLINE |
 | License Server 部署 + 註冊到 Ops | ✅ `.132`，Ops 顯示 *1 License server added* |
-| vCenter adapter 建立 | ✅ 已建，但 **啟動被 403 授權閘門擋住** |
+| vCenter adapter 建立 + 開始收集 | ✅ UI 路徑可收 **33 個物件**，但 **metrics = 0**（未授權）；API 路徑的 start 被 403 擋 |
 | BSC 註冊 → 取得授權 → 指派給 vCenter | ⛔ 需 Broadcom Site ID / 訂閱（disconnected 第 4 步之後） |
