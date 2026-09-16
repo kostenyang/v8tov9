@@ -1,0 +1,84 @@
+{
+  "sddcId": "vcf-m01",
+  "vcfInstanceName": "vcf-m01-converge",
+  "workflowType": "VCF",
+  "version": "9.1.1.0",
+  "ceipEnabled": false,
+  "managementPoolName": "vcf-m01-rp01",
+  "skipEsxThumbprintValidation": false,
+
+  "vcenterSpec": {
+    "vcenterHostname": "vcf-m01-vc01.kosten.lab",
+    "rootVcenterPassword": "<VC_ROOT_PASSWORD>",
+    "adminUserSsoUsername": "administrator@vsphere.local",
+    "adminUserSsoPassword": "<VC_SSO_PASSWORD>",
+    "useExistingDeployment": true,
+    "sslThumbprint": "<VC_SHA256_THUMBPRINT>"
+  },
+
+  "nsxtSpec": {
+    "useExistingDeployment": false,
+    "nsxtManagerSize": "medium",
+    "nsxtManagers": [
+      { "hostname": "vcf-m01-nsx01a.kosten.lab" }
+    ],
+    "vipFqdn": "vcf-m01-nsx01.kosten.lab",
+    "rootNsxtManagerPassword": "<NSX_ROOT_PASSWORD>",
+    "nsxtAdminPassword": "<NSX_ADMIN_PASSWORD>",
+    "nsxtAuditPassword": "<NSX_AUDIT_PASSWORD>",
+    "skipNsxOverlayOverManagementNetwork": false
+  },
+
+  "vcfManagementComponentsInfrastructureSpec": {
+    "xRegionNetwork": {
+      "networkName": "SDDC-DPortGroup-VM-Mgmt",
+      "gateway": "192.168.110.1",
+      "subnetMask": "255.255.255.0"
+    }
+  },
+
+  "sddcManagerSpec": {
+    "hostname": "vcf-m01-sddcm01.kosten.lab",
+    "useExistingDeployment": false,
+    "rootPassword": "<SDDCM_ROOT_PASSWORD>",
+    "sshPassword": "<SDDCM_VCF_PASSWORD>",
+    "localUserPassword": "<SDDCM_ADMIN_LOCAL_PASSWORD>"
+  },
+
+  "vspClusterSpec": {
+    "platformFqdn": "vcf-m01-vsp.kosten.lab",
+    "instanceFqdn": "vcf-m01-vsp-inst.kosten.lab",
+    "fleetFqdn": "vcf-m01-vsp-fleet.kosten.lab",
+    "size": "small",
+    "internalClusterCidrIpv4": "198.18.0.0/15",
+    "ipv4Pool": {
+      "ipRange": {
+        "startIpAddress": "192.168.110.160",
+        "endIpAddress": "192.168.110.171"
+      }
+    }
+  },
+
+  "vidbSpec": {
+    "hostname": "vcf-m01-vidb.kosten.lab"
+  },
+
+  "vcfOperationsSpec": {
+    "useExistingDeployment": false,
+    "applianceSize": "small",
+    "adminUserPassword": "<OPS_ADMIN_PASSWORD>",
+    "nodes": [
+      { "hostname": "vcf-ops01.kosten.lab", "type": "master", "rootUserPassword": "<OPS_ROOT_PASSWORD>" }
+    ]
+  },
+
+  "vcfOperationsCollectorSpec": {
+    "hostname": "vcf-m01-opscp.kosten.lab",
+    "applianceSize": "small",
+    "rootUserPassword": "<OPSCP_ROOT_PASSWORD>"
+  },
+
+  "licenseServerSpec": {
+    "hostname": "vcf-lic01.kosten.lab"
+  }
+}

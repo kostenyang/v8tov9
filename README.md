@@ -178,5 +178,6 @@ reboot
 | [`scripts/vcls-retreat.ps1`](scripts/vcls-retreat.ps1) / [`vcls-monitor.ps1`](scripts/vcls-monitor.ps1) | vCLS retreat mode 切換 / 監控 |
 | [`scripts/mm-exit.ps1`](scripts/mm-exit.ps1) / [`enable-ssh.ps1`](scripts/enable-ssh.ps1) | 退出 maintenance mode / 啟用 host SSH |
 | [`vcsa91-upgrade.json`](vcsa91-upgrade.json) | vCenter migration 範本（密碼已 placeholder）|
+| [`converge/`](converge/README.md) | 手動升到 9.1 後 **converge 進 VCF 9.1.1** 的 installer JSON 範本 —— **不給 Host TEP 網段**（overlay 走 vmk0）+ 依據與坑 |
 | [`https_repo.py`](https_repo.py) | 自簽 HTTPS 檔案伺服器（VAMI 只吃 HTTPS 時用）|
 | [`patch-boot.sh`](patch-boot.sh) | 注入 `allowLegacyCPU`（**實證非必要**，保留備用）|
