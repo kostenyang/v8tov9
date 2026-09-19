@@ -1,5 +1,8 @@
 # Converge 到 VCF 9.1.1 —— 不給 Host TEP (VTEP) 網段
 
+> ✅ **2026-09-19 實測成功(多 cluster)**:vCenter 9.1.1 下兩個 cluster(ESXi 9.1.1 ×4 + ESXi 8.0U3b ×4,後者是從 VCF 5.2.1 搬過來帶資料的 vSAN cluster),
+> 新部 NSX 9.1.1、overlay 走 vmk0、不給 TEP,`COMPLETED_WITH_SUCCESS` 181/181。實際用的 spec 見 [範本 3](#範本-3新部-nsxoverlay-over-management多-cluster2026-09-19-實測成功)。
+
 > 問題：客戶只給管理網段，沒有 NSX Host Overlay (TEP) 網段，9.1.1 用 converge 建 management domain 行不行？
 > **答：可以。** 9.1.x converge 流程支援把 host overlay 直接跑在管理 VMkernel (vmk0) 上，不需要另外的 TEP VLAN / subnet / IP pool。
 > Edge 不在本文範圍（本 lab 不部 Edge）。
@@ -108,3 +111,31 @@ curl -sk -u admin@local:<PW> -H 'Content-Type: application/json' \
 - 做過 bring-up 的 installer 資料庫記著舊 domain,converge 要用乾淨的 installer
 - vCenter 上若殘留同名 SDDC Manager VM 要先刪(`Validate Virtual Machine Names Do Not Exist`)
 - 各階段耗時(nested):SDDC Manager 27m / Convert 6m / VSP 2h40m / Ops 1h24m / VCFMS 1h17m
+
+
+---
+
+# 範本 3:新部 NSX、overlay over management、多 cluster(2026-09-19 實測成功)
+
+檔案:[`converge-m02-newnsx-overlay-mgmt-multicluster.json`](converge-m02-newnsx-overlay-mgmt-multicluster.json)
+
+= 範本 1 的做法(`useExistingDeployment:false` + `skipNsxOverlayOverManagementNetwork:false`、無 TEP)套到範本 2 的多 cluster 環境,**實際跑完**。
+
+## 實測結果
+
+| 問題 | 答案 |
+|---|---|
+| 多 cluster + 新部 NSX,installer prep 哪些 cluster? | **全部**。每個 cluster 各建 TNP(`<vc>-<cluster>`)+ Transport Node Collection、各自的 VLAN TZ(每 vDS 一個),共用一個 overlay TZ;8 台 transport node 全 success |
+| NSX 9.1.1 能不能 prep ESXi 8.0U3b? | 能。8.0U3b 主機裝 `nsx-* 9.1.1.0-8.0.25691512`(8.0 flavor),vLCM 映像加 `com.vmware.nsxt` solution;9.1.1 主機 NSX VIB 在 base image 內建,映像不加 solution |
+| overlay over management 要 TEP IP 嗎? | 不要。TNP `ip_assignment_spec.resource_type = NoIpv4`,主機不新增 TEP vmk(只有 vmk0/1/2 + vmk50 hyperbus) |
+| 任務數 | 183(沿用既有 NSX 是 134),多「Deploy and configure NSX」階段 45 分鐘(nested) |
+| 各階段耗時(nested) | Convert 5m / NSX 45m / VSP 2h21m / Ops 1h17m / VCFMS 1h12m |
+
+## 驗證差異(相對範本 2)
+- `Existing Components` 多一個 **WARNING**「cluster 是 vLCM image based,請確認 compliance」(每個 cluster 各列一條),cluster 已 COMPLIANT 時 acknowledge 即可。
+- NSX 的 INSTALL bundle 沒下載完會直接 **FAILED**(`NSX install image ... was not found`)。
+
+## 前置(客戶端)
+- mgmt VLAN **端到端 MTU ≥ 1600**(實體交換器、vDS、vmk0)。installer 驗證抓不到 MTU 不足:1500 也會 converge 成功,但之後 overlay(VPC / Supervisor / VCFA 租戶網路)>1450 bytes 封包會丟。
+- 所有 cluster 都會被 prep → NSX 授權、MTU 要涵蓋所有 cluster;不想 prep 的 cluster 事先不要放在這個 vCenter。
+- import 進來的舊版 cluster,converge 會把 vLCM desired image 設成 BOM 版本(9.1.1)→ 之後 compliance NON_COMPLIANT,預期用 LCM 升級。
