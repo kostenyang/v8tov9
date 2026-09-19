@@ -81,3 +81,30 @@ curl -sk -u admin@local:<PW> -H 'Content-Type: application/json' \
 3. overlay 與管理流量同一 broadcast domain、無隔離；lab / 小型可接受，正式環境建議另給網段。
 4. `version` 填 installer 實際版本（9.1.1 installer 填 `9.1.1.0`）。
 5. 本 repo 手上的 OpenAPI 副本是 9.1.0.0 installer；9.1.1 的 techdocs 文字與 RN 皆無變更，但送前建議 `GET https://<installer>/v1/sddcs/latest` 或 UI 精靈確認選項仍在。
+
+---
+
+# 範本 2:沿用既有 NSX + 多 cluster(2026-09-19 實測成功)
+
+檔案:[`converge-m02-existing-nsx-multicluster.json`](converge-m02-existing-nsx-multicluster.json)
+
+情境:vCenter 9.1.1 底下有兩個 cluster —— `m01-cl01`(ESXi 9.1.1,已是 NSX 9.1.1 transport node)與 `vcf-m01-cl01`(ESXi 8.0U3b,從 VCF 5.2.1 環境照 KB 326849 帶資料搬過來、無 NSX)。
+用 VCF Installer 9.1.1「DEPLOY USING JSON SPEC」把整個 vCenter converge 成 management domain,結果 `COMPLETED_WITH_SUCCESS`,SDDC Manager 兩個 cluster 都納管。
+
+| 區塊 | 與範本 1 的差異 |
+|---|---|
+| `nsxtSpec` | `useExistingDeployment: true` + VIP 的 `sslThumbprint`;不給 TEP、不給 overlay 選項。既有 transport node 保留,**沒 prepare 的 cluster 不會被 prepare** |
+| `clusterSpec` | 指定既有 `datacenterName` / `clusterName`(管理元件落點) |
+| `datastoreSpec` | **不能放**。`existingDatastoreName` 會套到 vCenter 內每一個 cluster,第二個 cluster 找不到就 `Existing Components` FAILED |
+| `fleetLcmSpec` / `sddcLcmSpec` | 明給 hostname(與 vspClusterSpec 的 fleetFqdn / instanceFqdn 一致) |
+
+實測驗證會逐 cluster 檢查的項目(每個 cluster 都要過):
+- vLCM image 模式(baseline 會擋)
+- vLCM 修復原則 `evacuate_offline_vms` 必須 = true(預設 false)→ `PUT /api/esx/settings/clusters/{id}/policies/apply {"evacuate_offline_vms":true}`
+- datastore 存在、VDS ≥ 8.0、vmk 靜態 IP
+- **不檢查** cluster 之間 ESXi 版本是否一致(9.1.1 + 8.0U3b 混用通過)
+
+其他:
+- 做過 bring-up 的 installer 資料庫記著舊 domain,converge 要用乾淨的 installer
+- vCenter 上若殘留同名 SDDC Manager VM 要先刪(`Validate Virtual Machine Names Do Not Exist`)
+- 各階段耗時(nested):SDDC Manager 27m / Convert 6m / VSP 2h40m / Ops 1h24m / VCFMS 1h17m
