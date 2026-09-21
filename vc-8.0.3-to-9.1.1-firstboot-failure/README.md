@@ -68,6 +68,20 @@ export 只停服務+關機，來源資料沒動：關新機 → 開回舊 8.0.3 
 
 **KB 396777 真的會踩**：來源若曾用 file-based backup 還原（lab 就是），`/var/cache/svcaccounts/vsphere-ui/.vsphere-ui` 不存在，RDU 切換時 vsphere-ui 起不來 → 先在來源跑 `scripts/fix-vsphere-ui-svcaccount.py`（KB 原文腳本）。
 
+## 第二輪(2026-09-22):逐步圖解手冊 + 三個新坑
+
+用客戶備份再 restore 一台乾淨的 8.0.3(`chtvcd-src2`),把 **方式 B(就地修復)** 和 **方式 A(回復重跑)** 各完整走一遍,每一步都截圖(GUI installer + appliance console):[`doc/vCenter-9.1.1-Upgrade-Failure-StepByStep.docx`](doc/)(41 頁)、截圖在 [`shots/stepbystep/`](shots/stepbystep/)、console 用的短腳本在 [`scripts/fix/`](scripts/fix/)。
+
+這一輪新踩到的:
+
+| 坑 | 結果 |
+|---|---|
+| **Step 0:要等 installer 的失敗清理跑完** | Stage 2 顯示 traceback 後,`invoke_upgrade.sh` 的 `exit_cleanup` 還在背景跑 1–3 分才 `prune-sensitive-info`;太早補參數會被再刪一次 → firstboot 在 `vmidentity-firstboot` 報 `Install-parameter vmdir.password not set`。`scripts/fix/0-wait.sh` 等 `invoke_upgrade` 消失、密碼參數只剩 `db.password_services` 再動手 |
+| **就地續跑只能跑一次** | 第一次 resume 中途失敗後,再 resume 會在 `vpostgres-firstboot`「Upgrade import step failed」:第一次已把匯出的 DB 消耗掉並初始化 vpostgres(留下 `vpostgres.backup.*`),無法重匯 → 續跑中途失敗就改走方式 A |
+| **RDU 過的舊機不能再當 GUI 升級的來源** | RDU「Expanding the source configuration」會把來源 VCDB schema 就地升到 9.1(`vc.vpx_version=911`),之後 GUI 的 vpxd_firstboot in-place VCDB upgrade 撞 `vsan_historical_cluster` unique constraint。RDU 切換時還會把舊機退役(暫時 IP + `[Link] Unmanaged=true`、hostname=localhost、mask lwsmd/vmafdd/vmdird/vmcad、vmon `.state_*.json` 全 DISABLED)— rollback 不是開機就好 |
+
+方式 A 實測:關新機 → 開回舊機(服務全起、23 VM)→ Stage 1(10 分)→ **立刻 CONTINUE** → Stage 2(export 7 分 + firstboot 9 分 + import 5 分)→ Complete。
+
 ## 檔案
 
 | 檔案 | 說明 |
