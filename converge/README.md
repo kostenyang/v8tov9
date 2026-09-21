@@ -139,3 +139,20 @@ curl -sk -u admin@local:<PW> -H 'Content-Type: application/json' \
 - mgmt VLAN **端到端 MTU ≥ 1600**(實體交換器、vDS、vmk0)。installer 驗證抓不到 MTU 不足:1500 也會 converge 成功,但之後 overlay(VPC / Supervisor / VCFA 租戶網路)>1450 bytes 封包會丟。
 - 所有 cluster 都會被 prep → NSX 授權、MTU 要涵蓋所有 cluster;不想 prep 的 cluster 事先不要放在這個 vCenter。
 - import 進來的舊版 cluster,converge 會把 vLCM desired image 設成 BOM 版本(9.1.1)→ 之後 compliance NON_COMPLIANT,預期用 LCM 升級。
+
+---
+
+# 範本 3 補充:vSS cluster / MTU 1500 cluster 實測(2026-09-21)
+
+同一份範本 3 spec、同一個 vCenter(9.1.1 cluster + 8.0U3b cluster),針對第二個(8.0)cluster 做兩個變因,回答「客戶另一個 cluster 網路不合規時 converge 怎樣」:
+
+| 變因(只動 8.0 cluster) | 驗證 | 部署 |
+|---|---|---|
+| 只有 vSS(vmk0/1/2 全在 vSwitch0,沒有 vDS) | **FAILED** —— `Existing Components`:`cluster vcf-m01-cl01: Cluster does not have any DVS in use` + 每台主機 `VMKernel adapter management / vmotion is not assigned to a dedicated port group`(vSS port group 不算);NEXT 灰 | 不能開始。**converge 前必須 vSS → vDS**(mgmt / vMotion 各自獨立 dvpg) |
+| vDS + vmk0/1/2 全 MTU 1500(另一個 cluster 9000) | **全過**,沒有任何 MTU 檢查(只剩 vLCM compliance / installer 容量兩個 WARNING) | `COMPLETED_WITH_SUCCESS` 181/181(Convert 4m37s / NSX 47m39s / VSP 2h30m / Ops 1h25m / VCFMS 1h14m)。NSX 9.1.1 對 MTU 1500 的 vDS 照樣建 transport node(vtepless、NoIpv4),4 台 8.0U3b 全 success |
+
+結論:
+- **沒有「跳過某個 cluster」的選項。** spec 只有 `clusterSpec` 指主 cluster;vCenter 下其他 cluster 一律 import + 建 TNP/TNC + prep。不想被 prep 的 cluster 事先移出這個 vCenter。
+- MTU 不驗、不擋,但 MTU 1500 的 cluster 之後 overlay 流量 >~1400 bytes 會丟;要在 converge 前自己把 mgmt VLAN 端到端拉到 ≥ 1600。
+- vSS 才是硬擋點(BROWNFIELD_VSPHERE_CHECK.error);vSAN vmk 沒被點名,但 mgmt / vMotion 一定要在 dvpg 上。
+- 順帶:拆 NSX 時若 NSX Manager 已先不見,主機端 `nsxcli -c 'del nsx'` 有三段 Y/N,一行指令要 `printf 'y\ny\ny\ny\ny\n' |`;8.0 主機要先 maintenance mode;ESXi 9 主機 VIB 留(base image)、另要清 `/etc/vmware/nsx/appliance-info.xml` 才會忘掉舊 manager。
