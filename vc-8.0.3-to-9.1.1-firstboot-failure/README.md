@@ -82,6 +82,18 @@ export 只停服務+關機，來源資料沒動：關新機 → 開回舊 8.0.3 
 
 方式 A 實測:關新機 → 開回舊機(服務全起、23 VM)→ Stage 1(10 分)→ **立刻 CONTINUE** → Stage 2(export 7 分 + firstboot 9 分 + import 5 分)→ Complete。
 
+### 時間設定不是變因(客戶端曾有「改 Host 模式就過」的經驗,補測)
+
+| 來源時間設定 | Stage 1 後 | 結果 |
+|---|---|---|
+| NTP 169.254.169.123(客戶原值,lab 不可達) | — | precheck 擋在 NTP,到不了 firstboot |
+| NTP 10.0.1.254(可達) | 關機/開機 | vmafd-firstboot `[Errno 111]`(×2) |
+| NTP 169.254.169.123(lab 加別名讓它可達、已同步) | 關機/開機 | vmafd-firstboot `[Errno 111]` |
+| **Host 模式**(與 ESXi 同步) | 關機/開機 | vmafd-firstboot `[Errno 111]` |
+| NTP 10.0.1.254(可達) | 直接 CONTINUE | Complete |
+
+另一種常被混淆的失敗:新機(暫時 IP)連不到來源設定的 NTP 時,Stage 2 在 export 後、firstboot 前報 `err_ntp_sync_failed`「Could not set up time synchronization」— 改 Host 模式(或換新機也連得到的 NTP)再**重跑 Stage 1→2** 就過;過關的前提還是中間沒重開機。
+
 ## 檔案
 
 | 檔案 | 說明 |
