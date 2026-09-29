@@ -142,6 +142,8 @@ reboot
 - **升級順序**：先升沒有 running 管理 VM 的 host；**跑 vCenter 的 host 最後升**
 - 下一台之前確認：`esxcli vsan debug resync summary get` → `Total Number Of Resyncing Objects: 0`
 
+> 另外兩條路（**vLCM image 升獨立主機**、**ISO 開機升級**）與 **VCF 納管規則**（build 必須等於 BOM、不允許單主機叢集）在 [`esxi-standalone-upgrade/`](esxi-standalone-upgrade/README.md)。
+
 ---
 
 ## 常見卡點速查
@@ -180,5 +182,6 @@ reboot
 | [`vcsa91-upgrade.json`](vcsa91-upgrade.json) | vCenter migration 範本（密碼已 placeholder）|
 | [`converge/`](converge/README.md) | 手動升到 9.1 後 **converge 進 VCF 9.1.1** 的 installer JSON 範本 —— **不給 Host TEP 網段**（overlay 走 vmk0）+ 依據與坑 |
 | [`vc-8.0.3-to-9.1.1-firstboot-failure/`](vc-8.0.3-to-9.1.1-firstboot-failure/README.md) | ★ **第三輪（2026-09-21）客戶案例**：vCenter 8.0.3 → 9.1.1 GUI 升級在 `vmafd-firstboot` 失敗 —— 根因 = Stage 1/2 之間重開機讓 vmdird/vmafdd 變 stale；用客戶備份在 lab 逐行重現；三種修復實測（回復重跑 / 就地續跑 firstboot / **RDU 33 分完成**）+ KB 396777 坑 + 交付 docx |
+| [`esxi-standalone-upgrade/`](esxi-standalone-upgrade/README.md) | ★ **ESXi 另外兩條升級路**：從 vCenter 用 **vLCM image 升獨立主機**（完整步驟，API + EULA 只能 UI 的坑）、**ISO 開機升級**；外加 VCF **主機納管規則**實測 —— build 必須完全等於 BOM、不允許單主機叢集、帶 VM 的主機怎麼進 cluster、1G NIC / 單條 uplink、depot token 要放 URL path |
 | [`https_repo.py`](https_repo.py) | 自簽 HTTPS 檔案伺服器（VAMI 只吃 HTTPS 時用）|
 | [`patch-boot.sh`](patch-boot.sh) | 注入 `allowLegacyCPU`（**實證非必要**，保留備用）|
