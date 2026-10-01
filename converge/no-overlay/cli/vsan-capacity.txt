@@ -1,0 +1,11 @@
+# 加碟前(4 台各 1 顆 1000 GB capacity)
+vsanDatastore  capacity=4,000 GB  free=3,862 GB     -> installer 容量檢查 WARNING(需 4664 GB)
+
+# Set-VsanFtt0.ps1:Default Storage Policy -> FTT=0 + forceProvisioning,reapply 既有 VM
+
+# 每台加一顆 1000 GB thin NVMe 並收進既有 disk group(New-VsanDisk -CanonicalName)
+vcf-m02-esx01.home.lab   disks=3
+vcf-m02-esx02.home.lab   disks=3
+vcf-m02-esx03.home.lab   disks=3
+vcf-m02-esx04.home.lab   disks=3
+vsanDatastore  capacity=8,000 GB  free=7,846 GB     -> 容量檢查 SUCCEEDED

@@ -1,0 +1,306 @@
+{
+  "results" : [ {
+    "node_id" : "b232e088-5c49-413a-a2b6-ce5214596172",
+    "host_switch_spec" : {
+      "host_switches" : [ {
+        "host_switch_name" : "vcf-m02-cl01-vds01",
+        "host_switch_id" : "50 3b 0c 00 7b ca 07 5b-c4 a7 f5 a4 21 88 7a 73",
+        "host_switch_type" : "VDS",
+        "host_switch_mode" : "STANDARD",
+        "ecmp_mode" : "L3",
+        "host_switch_profile_ids" : [ {
+          "key" : "UplinkHostSwitchProfile",
+          "value" : "611c8ea5-9466-4ab6-95b8-c8dc98e260e5"
+        }, {
+          "key" : "VtepHAHostSwitchProfile",
+          "value" : "0de8282e-7385-4e8e-a905-0c11960db728"
+        } ],
+        "uplinks" : [ {
+          "vds_uplink_name" : "dvUplink1",
+          "uplink_name" : "dvUplink1"
+        }, {
+          "vds_uplink_name" : "dvUplink2",
+          "uplink_name" : "dvUplink2"
+        } ],
+        "is_migrate_pnics" : false,
+        "cpu_config" : [ ],
+        "transport_zone_endpoints" : [ {
+          "transport_zone_id" : "1b3a2f36-bfd1-443e-a0f6-4de01abc963e",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        }, {
+          "transport_zone_id" : "aac06966-61dc-466c-9801-5c5130629b7c",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        } ],
+        "not_ready" : false,
+        "portgroup_transport_zone_id" : "89062255-db3b-3aa7-940e-c520fd5504c7",
+        "perf_nic_offload" : false
+      } ],
+      "resource_type" : "StandardHostSwitchSpec"
+    },
+    "maintenance_mode" : "DISABLED",
+    "node_deployment_info" : {
+      "os_type" : "ESXI",
+      "os_version" : "",
+      "managed_by_server" : "",
+      "discovered_node_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:host-18",
+      "compute_collection_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:domain-c9",
+      "windows_install_location" : "",
+      "resource_type" : "HostNode",
+      "external_id" : "b232e088-5c49-413a-a2b6-ce5214596172",
+      "fqdn" : "",
+      "ip_addresses" : [ "10.0.1.15" ],
+      "discovered_ip_addresses" : [ ],
+      "id" : "b232e088-5c49-413a-a2b6-ce5214596172"
+    },
+    "is_overridden" : false,
+    "resource_type" : "TransportNode",
+    "id" : "b232e088-5c49-413a-a2b6-ce5214596172",
+    "display_name" : "vcf-m02-esx02.home.lab",
+    "description" : "",
+    "tags" : [ {
+      "scope" : "policyPath",
+      "tag" : "/infra/sites/default/enforcement-points/default/host-transport-nodes/vcf-m02-esx02-6f626821-6381-497e-bbc2-fa6cb777908ehost-18"
+    } ],
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777898862,
+    "_create_user" : "system",
+    "_last_modified_time" : 1790777898862,
+    "_last_modified_user" : "system",
+    "_revision" : 0
+  }, {
+    "node_id" : "a71b66c7-629f-422c-bb45-5c44efe0c7f8",
+    "host_switch_spec" : {
+      "host_switches" : [ {
+        "host_switch_name" : "vcf-m02-cl01-vds01",
+        "host_switch_id" : "50 3b 0c 00 7b ca 07 5b-c4 a7 f5 a4 21 88 7a 73",
+        "host_switch_type" : "VDS",
+        "host_switch_mode" : "STANDARD",
+        "ecmp_mode" : "L3",
+        "host_switch_profile_ids" : [ {
+          "key" : "UplinkHostSwitchProfile",
+          "value" : "611c8ea5-9466-4ab6-95b8-c8dc98e260e5"
+        }, {
+          "key" : "VtepHAHostSwitchProfile",
+          "value" : "0de8282e-7385-4e8e-a905-0c11960db728"
+        } ],
+        "uplinks" : [ {
+          "vds_uplink_name" : "dvUplink1",
+          "uplink_name" : "dvUplink1"
+        }, {
+          "vds_uplink_name" : "dvUplink2",
+          "uplink_name" : "dvUplink2"
+        } ],
+        "is_migrate_pnics" : false,
+        "cpu_config" : [ ],
+        "transport_zone_endpoints" : [ {
+          "transport_zone_id" : "1b3a2f36-bfd1-443e-a0f6-4de01abc963e",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        }, {
+          "transport_zone_id" : "aac06966-61dc-466c-9801-5c5130629b7c",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        } ],
+        "not_ready" : false,
+        "portgroup_transport_zone_id" : "89062255-db3b-3aa7-940e-c520fd5504c7",
+        "perf_nic_offload" : false
+      } ],
+      "resource_type" : "StandardHostSwitchSpec"
+    },
+    "maintenance_mode" : "DISABLED",
+    "node_deployment_info" : {
+      "os_type" : "ESXI",
+      "os_version" : "",
+      "managed_by_server" : "",
+      "discovered_node_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:host-20",
+      "compute_collection_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:domain-c9",
+      "windows_install_location" : "",
+      "resource_type" : "HostNode",
+      "external_id" : "a71b66c7-629f-422c-bb45-5c44efe0c7f8",
+      "fqdn" : "",
+      "ip_addresses" : [ "10.0.1.17" ],
+      "discovered_ip_addresses" : [ ],
+      "id" : "a71b66c7-629f-422c-bb45-5c44efe0c7f8"
+    },
+    "is_overridden" : false,
+    "resource_type" : "TransportNode",
+    "id" : "a71b66c7-629f-422c-bb45-5c44efe0c7f8",
+    "display_name" : "vcf-m02-esx04.home.lab",
+    "description" : "",
+    "tags" : [ {
+      "scope" : "policyPath",
+      "tag" : "/infra/sites/default/enforcement-points/default/host-transport-nodes/vcf-m02-esx04-6f626821-6381-497e-bbc2-fa6cb777908ehost-20"
+    } ],
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777898862,
+    "_create_user" : "system",
+    "_last_modified_time" : 1790777898862,
+    "_last_modified_user" : "system",
+    "_revision" : 0
+  }, {
+    "node_id" : "776487cd-2f74-4296-9d20-c26461e5a3b2",
+    "host_switch_spec" : {
+      "host_switches" : [ {
+        "host_switch_name" : "vcf-m02-cl01-vds01",
+        "host_switch_id" : "50 3b 0c 00 7b ca 07 5b-c4 a7 f5 a4 21 88 7a 73",
+        "host_switch_type" : "VDS",
+        "host_switch_mode" : "STANDARD",
+        "ecmp_mode" : "L3",
+        "host_switch_profile_ids" : [ {
+          "key" : "UplinkHostSwitchProfile",
+          "value" : "611c8ea5-9466-4ab6-95b8-c8dc98e260e5"
+        }, {
+          "key" : "VtepHAHostSwitchProfile",
+          "value" : "0de8282e-7385-4e8e-a905-0c11960db728"
+        } ],
+        "uplinks" : [ {
+          "vds_uplink_name" : "dvUplink1",
+          "uplink_name" : "dvUplink1"
+        }, {
+          "vds_uplink_name" : "dvUplink2",
+          "uplink_name" : "dvUplink2"
+        } ],
+        "is_migrate_pnics" : false,
+        "cpu_config" : [ ],
+        "transport_zone_endpoints" : [ {
+          "transport_zone_id" : "1b3a2f36-bfd1-443e-a0f6-4de01abc963e",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        }, {
+          "transport_zone_id" : "aac06966-61dc-466c-9801-5c5130629b7c",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        } ],
+        "not_ready" : false,
+        "portgroup_transport_zone_id" : "89062255-db3b-3aa7-940e-c520fd5504c7",
+        "perf_nic_offload" : false
+      } ],
+      "resource_type" : "StandardHostSwitchSpec"
+    },
+    "maintenance_mode" : "DISABLED",
+    "node_deployment_info" : {
+      "os_type" : "ESXI",
+      "os_version" : "",
+      "managed_by_server" : "",
+      "discovered_node_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:host-19",
+      "compute_collection_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:domain-c9",
+      "windows_install_location" : "",
+      "resource_type" : "HostNode",
+      "external_id" : "776487cd-2f74-4296-9d20-c26461e5a3b2",
+      "fqdn" : "",
+      "ip_addresses" : [ "10.0.1.16" ],
+      "discovered_ip_addresses" : [ ],
+      "id" : "776487cd-2f74-4296-9d20-c26461e5a3b2"
+    },
+    "is_overridden" : false,
+    "resource_type" : "TransportNode",
+    "id" : "776487cd-2f74-4296-9d20-c26461e5a3b2",
+    "display_name" : "vcf-m02-esx03.home.lab",
+    "description" : "",
+    "tags" : [ {
+      "scope" : "policyPath",
+      "tag" : "/infra/sites/default/enforcement-points/default/host-transport-nodes/vcf-m02-esx03-6f626821-6381-497e-bbc2-fa6cb777908ehost-19"
+    } ],
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777898864,
+    "_create_user" : "system",
+    "_last_modified_time" : 1790777898864,
+    "_last_modified_user" : "system",
+    "_revision" : 0
+  }, {
+    "node_id" : "1693c5ef-d22b-4167-8c8b-75aea68cb6c8",
+    "host_switch_spec" : {
+      "host_switches" : [ {
+        "host_switch_name" : "vcf-m02-cl01-vds01",
+        "host_switch_id" : "50 3b 0c 00 7b ca 07 5b-c4 a7 f5 a4 21 88 7a 73",
+        "host_switch_type" : "VDS",
+        "host_switch_mode" : "STANDARD",
+        "ecmp_mode" : "L3",
+        "host_switch_profile_ids" : [ {
+          "key" : "UplinkHostSwitchProfile",
+          "value" : "611c8ea5-9466-4ab6-95b8-c8dc98e260e5"
+        }, {
+          "key" : "VtepHAHostSwitchProfile",
+          "value" : "0de8282e-7385-4e8e-a905-0c11960db728"
+        } ],
+        "uplinks" : [ {
+          "vds_uplink_name" : "dvUplink1",
+          "uplink_name" : "dvUplink1"
+        }, {
+          "vds_uplink_name" : "dvUplink2",
+          "uplink_name" : "dvUplink2"
+        } ],
+        "is_migrate_pnics" : false,
+        "cpu_config" : [ ],
+        "transport_zone_endpoints" : [ {
+          "transport_zone_id" : "1b3a2f36-bfd1-443e-a0f6-4de01abc963e",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        }, {
+          "transport_zone_id" : "aac06966-61dc-466c-9801-5c5130629b7c",
+          "transport_zone_profile_ids" : [ {
+            "resource_type" : "BfdHealthMonitoringProfile",
+            "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+          } ]
+        } ],
+        "not_ready" : false,
+        "portgroup_transport_zone_id" : "89062255-db3b-3aa7-940e-c520fd5504c7",
+        "perf_nic_offload" : false
+      } ],
+      "resource_type" : "StandardHostSwitchSpec"
+    },
+    "maintenance_mode" : "DISABLED",
+    "node_deployment_info" : {
+      "os_type" : "ESXI",
+      "os_version" : "",
+      "managed_by_server" : "",
+      "discovered_node_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:host-12",
+      "compute_collection_id" : "6f626821-6381-497e-bbc2-fa6cb777908e:domain-c9",
+      "windows_install_location" : "",
+      "resource_type" : "HostNode",
+      "external_id" : "1693c5ef-d22b-4167-8c8b-75aea68cb6c8",
+      "fqdn" : "",
+      "ip_addresses" : [ "10.0.1.14" ],
+      "discovered_ip_addresses" : [ ],
+      "id" : "1693c5ef-d22b-4167-8c8b-75aea68cb6c8"
+    },
+    "is_overridden" : false,
+    "resource_type" : "TransportNode",
+    "id" : "1693c5ef-d22b-4167-8c8b-75aea68cb6c8",
+    "display_name" : "vcf-m02-esx01.home.lab",
+    "description" : "",
+    "tags" : [ {
+      "scope" : "policyPath",
+      "tag" : "/infra/sites/default/enforcement-points/default/host-transport-nodes/vcf-m02-esx01-6f626821-6381-497e-bbc2-fa6cb777908ehost-12"
+    } ],
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777898865,
+    "_create_user" : "system",
+    "_last_modified_time" : 1790777898865,
+    "_last_modified_user" : "system",
+    "_revision" : 0
+  } ],
+  "result_count" : 4,
+  "sort_by" : "create_time",
+  "sort_ascending" : true
+}

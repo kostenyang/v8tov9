@@ -1,0 +1,16 @@
+# vLCM remediate 前(Nested_ESXi9.1.0.0 OVA)
+10.0.1.14: Version:9.1.0 Build:25370933
+10.0.1.15: Version:9.1.0 Build:25370933
+10.0.1.16: Version:9.1.0 Build:25370933
+10.0.1.17: Version:9.1.0 Build:25370933
+
+# vLCM desired image = 9.1.1.0.25714478,remediate 後
+10.0.1.14: Version:9.1.1 Build:25714478
+10.0.1.15: Version:9.1.1 Build:25714478
+10.0.1.16: Version:9.1.1 Build:25714478
+10.0.1.17: Version:9.1.1 Build:25714478
+
+# last-apply-result
+successful: ['vcf-m02-esx01','vcf-m02-esx02','vcf-m02-esx03','vcf-m02-esx04']
+failed    : []
+skipped   : []

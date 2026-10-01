@@ -1,0 +1,24 @@
+# 變體 B(VVF、完全不要 NSX)—— workflowType 合法值由 installer 自己吐出來
+POST /v1/sddcs/validations {"workflowType":"BOGUS"} ->
+  The property 'workflowType' in input Specification must be one among:
+  [VCF, VCF_EXTEND, VVF, VCF_BOOTSTRAP]
+
+# workflowType=VVF + 省略 nsxtSpec / sddcManagerSpec -> installer 接受,以 VALIDATION_VVF 執行
+execution: FAILED | result: FAILED            (第二輪,修掉前三個問題之後)
+  Deployment Specification   SUCCEEDED
+  Security Configuration     SUCCEEDED
+  DNS Resolution             SUCCEEDED
+  Versions and Bundles       FAILED
+      ! Could not retrieve binary for component VCF services runtime 9.1.1.0.25714471
+      ! Could not retrieve binary for component License server      9.1.1.0.25679819
+      ! Could not retrieve binary for component VCF Operations      9.1.1.0.25679751
+      ! Could not retrieve binary for component Cloud proxy         9.1.1.0.25679891
+      ! Could not retrieve binary for component Fleet lifecycle     9.1.1.0.25713934
+      ! Could not retrieve binary for component SDDC lifecycle      9.1.1.0.25713940
+      ! Could not retrieve binary for component Telemetry           9.1.1.0.25671600
+      ! Could not retrieve binary for component Software depot      9.1.1.0.25713941
+  Password Policies          SUCCEEDED
+  Network Configuration      SUCCEEDED
+  Existing Components        SUCCEEDED
+  Capacity (3 項)            SUCCEEDED
+# 注意:需要的 8 個元件裡「沒有 NSX、沒有 SDDC Manager」-> VVF 路線確實不含這兩者

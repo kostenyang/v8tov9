@@ -1,0 +1,88 @@
+{
+    "__comment": "變體 A:部 NSX 但完全不設 overlay —— skipNsxOverlayOverManagementNetwork=true,且刻意不給 transportVlanId / ipAddressPoolSpec,host 會成為 vtepless transport node。skipEsxThumbprintValidation=true(nested lab 不給 host SSH key);所有密碼明寫,不用 installer 自動產生的。vcf-m02-vsp-inst.home.lab 的 DNS 已補(10.0.0.177),否則會報 IP family mismatch。",
+    "sddcId": "vcf-m02",
+    "vcfInstanceName": "vcf-m02-converge",
+    "workflowType": "VCF",
+    "version": "9.1.1.0",
+    "ceipEnabled": false,
+    "managementPoolName": "vcf-m02-rp01",
+    "skipEsxThumbprintValidation": true,
+    "vcenterSpec": {
+        "vcenterHostname": "vcf-m02-vc01.home.lab",
+        "rootVcenterPassword": "<VC_ROOT_PASSWORD>",
+        "adminUserSsoUsername": "administrator@vsphere.local",
+        "adminUserSsoPassword": "<VC_SSO_PASSWORD>",
+        "useExistingDeployment": true,
+        "sslThumbprint": "1E:D9:FF:39:8D:B9:91:17:32:1D:FD:49:C1:62:8B:6C:A4:A1:16:0C:97:06:FF:93:8C:8A:DF:C1:C9:ED:AF:50"
+    },
+    "nsxtSpec": {
+        "useExistingDeployment": false,
+        "nsxtManagerSize": "medium",
+        "nsxtManagers": [
+            {
+                "hostname": "vcf-m02-nsx01a.home.lab"
+            }
+        ],
+        "vipFqdn": "vcf-m02-nsx01.home.lab",
+        "rootNsxtManagerPassword": "<NSX_ROOT_PASSWORD>",
+        "nsxtAdminPassword": "<NSX_ADMIN_PASSWORD>",
+        "nsxtAuditPassword": "<NSX_AUDIT_PASSWORD>",
+        "skipNsxOverlayOverManagementNetwork": true
+    },
+    "vcfManagementComponentsInfrastructureSpec": {
+        "xRegionNetwork": {
+            "networkName": "SDDC-DPortGroup-VM-Mgmt",
+            "gateway": "10.0.0.1",
+            "subnetMask": "255.255.254.0"
+        }
+    },
+    "sddcManagerSpec": {
+        "hostname": "vcf-m02-sddcm01.home.lab",
+        "useExistingDeployment": false,
+        "rootPassword": "<SDDCM_ROOT_PASSWORD>",
+        "sshPassword": "<SDDCM_VCF_PASSWORD>",
+        "localUserPassword": "<SDDCM_ADMIN_LOCAL_PASSWORD>"
+    },
+    "vspClusterSpec": {
+        "platformFqdn": "vcf-m02-vsp01.home.lab",
+        "instanceFqdn": "vcf-m02-vsp-inst.home.lab",
+        "fleetFqdn": "vcf-m02-fleet01.home.lab",
+        "size": "small",
+        "internalClusterCidrIpv4": "240.0.0.0/15",
+        "ipv4Pool": {
+            "ipRange": {
+                "startIpAddress": "10.0.0.231",
+                "endIpAddress": "10.0.0.242"
+            }
+        },
+        "rootUserPassword": "<VSP_ROOT_PASSWORD>",
+        "adminUserPassword": "<VSP_ADMIN_PASSWORD>"
+    },
+    "vidbSpec": {
+        "hostname": "vcf-m02-vidb.home.lab",
+        "rootUserPassword": "<VIDB_ROOT_PASSWORD>",
+        "adminUserPassword": "<VIDB_ADMIN_PASSWORD>"
+    },
+    "vcfOperationsSpec": {
+        "useExistingDeployment": false,
+        "applianceSize": "small",
+        "adminUserPassword": "<OPS_ADMIN_PASSWORD>",
+        "nodes": [
+            {
+                "hostname": "vcf-m02-ops01.home.lab",
+                "type": "master",
+                "rootUserPassword": "<OPS_ROOT_PASSWORD>"
+            }
+        ]
+    },
+    "vcfOperationsCollectorSpec": {
+        "hostname": "vcf-m02-opsc01.home.lab",
+        "applianceSize": "small",
+        "rootUserPassword": "<OPSCP_ROOT_PASSWORD>"
+    },
+    "licenseServerSpec": {
+        "hostname": "vcf-m02-license.home.lab",
+        "rootUserPassword": "<LIC_ROOT_PASSWORD>",
+        "adminUserPassword": "<LIC_ADMIN_PASSWORD>"
+    }
+}

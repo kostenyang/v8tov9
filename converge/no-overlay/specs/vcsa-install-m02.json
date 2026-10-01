@@ -1,0 +1,57 @@
+{
+    "__version": "2.13.0",
+    "__comments": "Converge 目標端:在 nested esx01 (10.0.1.14) 上以 single-node vSAN 引導 vCenter 9.1.1。裝完再把 esx02-04 加進 cluster 並擴 vSAN。",
+    "new_vcsa": {
+        "esxi": {
+            "hostname": "10.0.1.14",
+            "username": "root",
+            "password": "<ESXI_ROOT_PASSWORD>",
+            "deployment_network": "VM Network",
+            "VCSA_cluster": {
+                "datacenter": "vcf-m02-dc01",
+                "cluster": "vcf-m02-cl01",
+                "compression_only": false,
+                "deduplication_and_compression": false,
+                "enable_vsan_esa": false,
+                "disks_for_vsan": {
+                    "cache_disk": [
+                        "eui.c362c7e0d9e37df5000c296a572bfb07"
+                    ],
+                    "capacity_disk": [
+                        "eui.c4d221bc2b428e54000c296b876cd9b0"
+                    ]
+                }
+            }
+        },
+        "appliance": {
+            "thin_disk_mode": true,
+            "deployment_option": "small",
+            "name": "vcf-m02-vc01"
+        },
+        "network": {
+            "ip_family": "ipv4",
+            "mode": "static",
+            "system_name": "vcf-m02-vc01.home.lab",
+            "ip": "10.0.1.19",
+            "prefix": "23",
+            "gateway": "10.0.0.1",
+            "dns_servers": [
+                "10.0.0.200"
+            ]
+        },
+        "os": {
+            "password": "<APPLIANCE_ROOT_PASSWORD>",
+            "ntp_servers": "10.0.1.254",
+            "ssh_enable": true
+        },
+        "sso": {
+            "password": "<SSO_ADMIN_PASSWORD>",
+            "domain_name": "vsphere.local"
+        }
+    },
+    "ceip": {
+        "settings": {
+            "ceip_enabled": false
+        }
+    }
+}

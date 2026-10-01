@@ -1,0 +1,36 @@
+{
+  "results" : [ {
+    "transport_node_id" : "776487cd-2f74-4296-9d20-c26461e5a3b2",
+    "maintenance_mode_state" : "DISABLED",
+    "node_deployment_state" : {
+      "state" : "in_progress",
+      "details" : [ ]
+    },
+    "state" : "pending"
+  }, {
+    "transport_node_id" : "b232e088-5c49-413a-a2b6-ce5214596172",
+    "maintenance_mode_state" : "DISABLED",
+    "node_deployment_state" : {
+      "state" : "in_progress",
+      "details" : [ ]
+    },
+    "state" : "pending"
+  }, {
+    "transport_node_id" : "a71b66c7-629f-422c-bb45-5c44efe0c7f8",
+    "maintenance_mode_state" : "DISABLED",
+    "node_deployment_state" : {
+      "state" : "in_progress",
+      "details" : [ ]
+    },
+    "state" : "pending"
+  }, {
+    "transport_node_id" : "1693c5ef-d22b-4167-8c8b-75aea68cb6c8",
+    "maintenance_mode_state" : "DISABLED",
+    "node_deployment_state" : {
+      "state" : "in_progress",
+      "details" : [ ]
+    },
+    "state" : "pending"
+  } ],
+  "result_count" : 4
+}

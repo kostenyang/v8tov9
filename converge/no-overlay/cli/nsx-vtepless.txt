@@ -1,0 +1,23 @@
+# converge 完成後再驗一次:4 台 host transport node 的 TEP 設定
+# GET /api/v1/transport-nodes  ->  host_switch_spec.host_switches[].ip_assignment_spec
+vcf-m02-esx01.home.lab     ip_assignment_spec=None
+vcf-m02-esx02.home.lab     ip_assignment_spec=None
+vcf-m02-esx03.home.lab     ip_assignment_spec=None
+vcf-m02-esx04.home.lab     ip_assignment_spec=None
+
+# host switch / transport zone
+switch: vcf-m02-cl01-vds01 | mode: STANDARD
+tz    : nsx-overlay-transportzone (1b3a2f36) + vcf-m02-cl01-vds01-vlan-tz (aac06966)
+
+# GET /api/v1/transport-nodes/state
+776487cd-2f74-4296-9 -> success
+b232e088-5c49-413a-a -> success
+a71b66c7-629f-422c-b -> success
+1693c5ef-d22b-4167-8 -> success
+
+# NSX UI(System > Fabric > Hosts > 展開 cluster)
+Node                     IP          ESX     TEP IP Address   Tunnels         NSX Configuration  Status
+vcf-m02-esx01.home.lab   10.0.1.14   9.1.1   Not Set          Not Available   Success            Up
+vcf-m02-esx02.home.lab   10.0.1.15   9.1.1   Not Set          Not Available   Success            Up
+vcf-m02-esx03.home.lab   10.0.1.16   9.1.1   Not Set          Not Available   Success            Up
+vcf-m02-esx04.home.lab   10.0.1.17   9.1.1   Not Set          Not Available   Success            Up
