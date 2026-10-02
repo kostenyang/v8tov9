@@ -1,0 +1,17 @@
+=== 修正 #2:在管理網域的 NSX 註冊 w01 vCenter 為 Compute Manager ===
+POST https://vcf-m02-nsx01.home.lab/api/v1/fabric/compute-managers
+  { "display_name":"vcf-w01-vc01", "server":"vcf-w01-vc01.home.lab", "origin_type":"vCenter",
+    "create_service_account":true, "set_as_oidc_provider":true, "access_level_for_oidc":"FULL",
+    "multi_nsx":false, "reverse_proxy_https_port":443,
+    "credential":{"credential_type":"UsernamePasswordLoginCredential",
+                  "username":"administrator@vsphere.local","password":"<REDACTED>",
+                  "thumbprint":"A5:55:C2:F8:...:A0:7A"} }
+→ HTTP 201, id = b88e27f5-5a00-4658-908e-8764de6bf2a4
+
+--- 狀態
+  registration_status = REGISTERED
+  connection_status   = UP
+
+--- 這套 NSX 現在管了兩個 vCenter
+   vcf-m02-vc01.home.lab | VMware vCenter Server 9.1.1.0.25712839
+   vcf-w01-vc01.home.lab | VMware vCenter Server 9.1.1.0.25712839

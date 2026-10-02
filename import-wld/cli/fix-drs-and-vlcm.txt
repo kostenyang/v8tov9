@@ -1,0 +1,20 @@
+=== 修正 #1 / #3 ===
+[#1] Cluster DRS
+    查下來本來就是 enabled=true / defaultVmBehavior=fullyAutomated,
+    推測是升級期間 vCenter 剛起來、驗證時讀到不穩的狀態。重跑驗證即可。
+[{"drs_enabled":true,"cluster":"domain-c9","name":"vcf-w01-cl01","ha_enabled":false}]
+
+[#3] Cluster is vSphere Lifecycle Manager (vLCM) image based
+    原本 w01 叢集是 baseline 管理。做法:vSphere Client → Cluster → Updates →
+    Image Setup →「Currently running images in the cluster」偵測到
+      ESXi 8.0 U3b - 24280767,0 added and 0 removed components
+      All hosts are running this image
+    → PROCEED WITH THIS IMAGE → Save → Validate(映像有效)→ Check compliance
+      (All hosts in this cluster are compliant)→ FINISH IMAGE SETUP
+    🔑 用「沿用現行映像」這條路,主機版本完全不動,不會被拉去升級;
+       離線 depot 裡沒有 8.0U3b 的 ESXi depot zip 也不影響。
+    ⚠ 確認框明寫:完成後叢集無法再退回 baseline 管理。
+
+--- 驗收
+    enablement/software : {"enabled":true}
+    desired base image  : 8.0.3-0.35.24280767 ( 8.0 U3b - 24280767 )

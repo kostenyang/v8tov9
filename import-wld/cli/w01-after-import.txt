@@ -1,0 +1,14 @@
+=== 匯入後 w01 vCenter 現況 ===
+FullName:     VMware vCenter Server 9.1.1.0.25712839
+Build:        25712839
+--- hosts
+  vcf-w01-esx01.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+  vcf-w01-esx02.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+  vcf-w01-esx03.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+--- VMs(多了 SDDC Manager 放進來的東西嗎)
+vcf-w01-vc01-OLD-803
+vcf-w01-vc01
+--- datastore
+  Capacity:  1500.0 GB
+  Free:      1308.4 GB
+--- vCenter 的 extension(匯入會註冊 SDDC Manager extension)

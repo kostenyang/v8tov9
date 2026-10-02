@@ -1,0 +1,15 @@
+=== 階段 3 結果:vcsa-deploy upgrade(migration-based)===
+來源 vcf-w01-vc01.home.lab 8.0.3 build-24853646  →  目標 9.1.1.0.25712839
+Successfully completed VCSA deployment.  VCSA Deployment Start Time:
+2026-10-02T15:05:43.245Z VCSA Deployment End Time: 2026-10-02T15:55:55.390Z
+Appliance Name: vcf-w01-vc01-new
+System Name: vcf-w01-vc01.home.lab
+System IP: 10.0.1.49
+Log in as: Administrator@vsphere.local
+The vCenter Server will currently be in the evaluation-mode
+
+RESULT: success | Upgrade finished successfully. 
+
+--- 各階段
+  Task: Run appliance precheck.(SUCCEEDED 100/100)
+  Task: Import data into appliance.(SUCCEEDED 100/100)

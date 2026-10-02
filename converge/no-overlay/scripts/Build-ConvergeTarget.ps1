@@ -49,7 +49,7 @@ function Log($m) { "[{0}] {1}" -f (Get-Date -Format HH:mm:ss), $m | Tee-Object -
 #    自動載入時會配到 13.5.0 的 Core/Sdk,VDS 相關 cmdlet 全部噴
 #    "Field not found: 'VMware.VimAutomation.Sdk.Util10.VIObjectImpl._connectionId'"。
 #    一律明確指定版本載入。
-$PCLI = '13.5.0.25380678'
+$PCLI = '13.5.1.25718932'
 Import-Module VMware.VimAutomation.Sdk  -RequiredVersion $PCLI -ErrorAction Stop | Out-Null
 Import-Module VMware.VimAutomation.Core -RequiredVersion $PCLI -ErrorAction Stop | Out-Null
 Import-Module VMware.VimAutomation.Vds  -RequiredVersion $PCLI -ErrorAction Stop | Out-Null

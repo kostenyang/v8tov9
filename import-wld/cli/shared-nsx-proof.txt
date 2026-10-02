@@ -1,0 +1,18 @@
+=== 匯入進行中:兩個網域共用同一個 NSX cluster id ===
+GET https://vcf-m02-sddcm01.home.lab/v1/domains
+
+  domain      : vcf-m02 ( MANAGEMENT )  status = ACTIVE
+  vCenter     : vcf-m02-vc01.home.lab
+  NSX vipFqdn : vcf-m02-nsx01.home.lab
+  NSX id      : 03321675-7b16-40c5-a45a-50121217aea4
+
+  domain      : vcf-w01 ( VI )  status = ACTIVATING
+  vCenter     : vcf-w01-vc01.home.lab
+  NSX vipFqdn : vcf-m02-nsx01.home.lab
+  NSX id      : 03321675-7b16-40c5-a45a-50121217aea4
+
+★ 兩個網域的 nsxtCluster.id 完全相同 → 的確是同一套 NSX 執行個體,不是各自一套。
+
+=== 同一套 NSX 底下的 compute manager ===
+   vcf-m02-vc01.home.lab | VMware vCenter Server 9.1.1.0.25712839
+   vcf-w01-vc01.home.lab | VMware vCenter Server 9.1.1.0.25712839

@@ -1,7 +1,7 @@
 # 把每台 nested ESXi 新加的 1000 GB 磁碟收進既有的 vSAN disk group(當第二顆 capacity)。
 #   $env:VCPASS='...'; pwsh ./Add-VsanCapacity.ps1
 $ErrorActionPreference = 'Stop'
-$PCLI = '13.5.0.25380678'
+$PCLI = '13.5.1.25718932'
 Import-Module VMware.VimAutomation.Sdk     -RequiredVersion $PCLI | Out-Null
 Import-Module VMware.VimAutomation.Core    -RequiredVersion $PCLI | Out-Null
 Import-Module VMware.VimAutomation.Storage -RequiredVersion $PCLI | Out-Null

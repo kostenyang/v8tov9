@@ -1,0 +1,58 @@
+{
+    "__version": "2.13.0",
+    "__comments": "Coverage lab 階段 3:workload domain 的 vCenter 8.0.3 -> 9.1.1(migration-based)。三台主機維持 ESXi 8.0U3b 不動。新 appliance 由來源 vCenter 自己部署進 vcf-w01-cl01,接 VDS portgroup w01-DPortGroup-VM-Mgmt。",
+    "new_vcsa": {
+        "vc": {
+            "hostname": "vcf-w01-vc01.home.lab",
+            "username": "administrator@vsphere.local",
+            "password": "<REDACTED>",
+            "deployment_network": "w01-DPortGroup-VM-Mgmt",
+            "datacenter": [
+                "vcf-w01-dc01"
+            ],
+            "datastore": "vsanDatastore",
+            "target": [
+                "vcf-w01-cl01"
+            ]
+        },
+        "appliance": {
+            "thin_disk_mode": true,
+            "deployment_option": "small",
+            "name": "vcf-w01-vc01-new"
+        },
+        "os": {
+            "ssh_enable": true
+        },
+        "temporary_network": {
+            "ip_family": "ipv4",
+            "mode": "static",
+            "ip": "10.0.1.50",
+            "prefix": "23",
+            "gateway": "10.0.0.1",
+            "dns_servers": [
+                "10.0.0.200"
+            ]
+        },
+        "user_options": {
+            "vcdb_migrateSet": "core"
+        }
+    },
+    "source_vc": {
+        "managing_esxi_or_vc": {
+            "hostname": "vcf-w01-esx01.home.lab",
+            "username": "root",
+            "password": "<REDACTED>"
+        },
+        "vc_vcsa": {
+            "hostname": "vcf-w01-vc01.home.lab",
+            "username": "administrator@vsphere.local",
+            "password": "<REDACTED>",
+            "root_password": "<REDACTED>"
+        }
+    },
+    "ceip": {
+        "settings": {
+            "ceip_enabled": false
+        }
+    }
+}

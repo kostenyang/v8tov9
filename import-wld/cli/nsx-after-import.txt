@@ -1,0 +1,25 @@
+=== 匯入後:同一套 NSX 的 host transport nodes ===
+共 4 個 host transport node
+  vcf-m02-esx01.home.lab     vtep ip_assignment=[{}]
+  vcf-m02-esx02.home.lab     vtep ip_assignment=[{}]
+  vcf-m02-esx03.home.lab     vtep ip_assignment=[{}]
+  vcf-m02-esx04.home.lab     vtep ip_assignment=[{}]
+
+=== compute managers ===
+   vcf-m02-vc01.home.lab
+   vcf-w01-vc01.home.lab
+
+=== Transport Node Collections(叢集層級的 NSX prep)===
+共 1 個
+   4a5dca86-ab7e-47d0-8d65-28c0122f5610 | compute_collection_id= a227bcbe-22b5-4238-bbac-37602d9fcb40:domain-c9
+
+=== NSX 看得到的 compute collection(叢集)===
+  Resources          origin=a227bcbe-22b5-4238-b  id=a227bcbe-22b5-4238-bbac-37602d9fcb40:resgroup-10
+  Resources          origin=b88e27f5-5a00-4658-9  id=b88e27f5-5a00-4658-908e-8764de6bf2a4:resgroup-10
+  vcf-m02-cl01       origin=a227bcbe-22b5-4238-b  id=a227bcbe-22b5-4238-bbac-37602d9fcb40:domain-c9
+  vcf-m02-cl01-mgmt-001 origin=a227bcbe-22b5-4238-b  id=a227bcbe-22b5-4238-bbac-37602d9fcb40:resgroup-35
+  vcf-w01-cl01       origin=b88e27f5-5a00-4658-9  id=b88e27f5-5a00-4658-908e-8764de6bf2a4:domain-c9
+
+★ 觀察:匯入只是把網域接上同一套 NSX,w01 的 3 台主機並沒有被自動 prep 成
+  transport node(NSX 的 host transport node 仍然只有管理網域那 4 台)。
+  要讓 w01 真的用 NSX 網路,得另外做叢集的 NSX 準備。

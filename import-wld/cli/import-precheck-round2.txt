@@ -1,0 +1,20 @@
+=== 匯入 precheck 第二輪(2026-10-03 01:27)=== Validation Succeeded
+71 Passed / 0 Errors / 1 Warning
+
+Compatibility validation                                               :: Success
+Cluster Distributed Resource Scheduler (DRS)                           :: Success
+Cluster DVS presence                                                   :: Success
+Conforming cluster present                                             :: Success
+DVS version                                                            :: Success
+ESXi vmotion IP address family                                         :: Success
+ESXi upgrade policy validation across vCenter and SDDC Manager         :: Warning
+Host certificate CN/SAN                                                :: Success
+Host name                                                              :: Success
+NTP service                                                            :: Success
+
+唯一的 Warning 仍是 ESXi upgrade policy 與 SDDC Manager 預設值不同,不擋匯入。
+
+第一輪 3 個 Error 的修法:
+  DRS            → 本來就是 fullyAutomated,重跑即過
+  NSX compute mgr→ 在 vcf-m02-nsx01 註冊 vcf-w01-vc01 為 Compute Manager
+  vLCM image     → 叢集沿用現行映像(ESXi 8.0 U3b - 24280767)轉成映像管理

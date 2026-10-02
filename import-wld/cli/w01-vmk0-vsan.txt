@@ -1,0 +1,29 @@
+[22:10:51] remove vcf-w01-esx01.home.lab vmk1
+[22:10:52] remove vcf-w01-esx01.home.lab vmk2
+[22:10:52] vcf-w01-esx01.home.lab vmk0 (10.0.1.46) -> enable vMotion + vSAN
+[22:11:00] remove vcf-w01-esx02.home.lab vmk1
+[22:11:00] remove vcf-w01-esx02.home.lab vmk2
+[22:11:01] vcf-w01-esx02.home.lab vmk0 (10.0.1.47) -> enable vMotion + vSAN
+[22:11:08] remove vcf-w01-esx03.home.lab vmk1
+[22:11:09] remove vcf-w01-esx03.home.lab vmk2
+[22:11:10] vcf-w01-esx03.home.lab vmk0 (10.0.1.48) -> enable vMotion + vSAN
+[22:11:17] === vmk summary ===
+[22:11:17] 
+Host                   Name PortGroupName          IP        VMotionEnabled VsanTrafficEnabled
+----                   ---- -------------          --        -------------- ------------------
+vcf-w01-esx01.home.lab vmk0 w01-DPortGroup-VM-Mgmt 10.0.1.46           True               True
+
+
+[22:11:17] 
+Host                   Name PortGroupName          IP        VMotionEnabled VsanTrafficEnabled
+----                   ---- -------------          --        -------------- ------------------
+vcf-w01-esx02.home.lab vmk0 w01-DPortGroup-VM-Mgmt 10.0.1.47           True               True
+
+
+[22:11:17] 
+Host                   Name PortGroupName          IP        VMotionEnabled VsanTrafficEnabled
+----                   ---- -------------          --        -------------- ------------------
+vcf-w01-esx03.home.lab vmk0 w01-DPortGroup-VM-Mgmt 10.0.1.48           True               True
+
+
+[22:11:17] done

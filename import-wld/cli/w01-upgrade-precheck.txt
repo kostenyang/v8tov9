@@ -1,0 +1,40 @@
+=== 階段3 precheck(vcsa-deploy upgrade --precheck-only --upgrade-framework legacy)===
+source: vcf-w01-vc01.home.lab 8.0.3 build-24853646   target: 9.1.1.0.25712839
+Pre-upgrade check warning: 1. Title: Files that cannot be used with Lifecycle
+Pre-upgrade check warning: 1. Details: Files that cannot be used with Lifecycle
+Pre-upgrade check warning: 1. Suggested Resolution: Please review VMware
+Pre-upgrade check warning: 2. Problem ID: upgrade.vpxd.external.extension
+Pre-upgrade check warning: 2. Title: This vCenter Server has extensions
+Pre-upgrade check warning: 2. Details: vCenter External Extensions
+Pre-upgrade check warning: 2. Suggested Resolution: Please ensure extensions are
+Estimated disk space required on source VM for export data: 1.97 GB
+Estimated total disk space required on target VM: 2.88 GB
+[SUCCEEDED] Successfully executed Task 'Running precheck: Appliance Health
+[SUCCEEDED] Successfully executed Task 'Running precheck:
+[SUCCEEDED] Successfully executed Task 'Running precheck: TargetCredentials' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: HostConfigs' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: TargetHostType' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: TargetVersion' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: OVAProperties.' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: IpFqdnInUse' in
+[SUCCEEDED] Successfully executed Task 'Running precheck:
+[SUCCEEDED] Successfully executed Task 'Running precheck: DNSResolveTask' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: ESXManagementStatus'
+[SUCCEEDED] Successfully executed Task 'Running precheck: ApplianceName' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: SourceCredentials' in
+[SUCCEEDED] Successfully executed Task 'Running precheck: InventorySize' in
+[SUCCEEDED] Successfully executed Task 'Running precheck:
+[SUCCEEDED] Successfully executed Task 'Running Pre-check: Target Datastore
+[SUCCEEDED] Successfully executed Task 'Running precheck: UserOptionMigrateSet'
+[SUCCEEDED] Successfully executed Task 'Running Pre-check: Target Network
+[SUCCEEDED] Successfully executed Task 'PrecheckTask: Running prechecks.' in
+
+RESULT:
+{
+  "status": "success",
+  "status_code": 0,
+  "detail": {
+    "translatable": "Upgrade finished successfully. ",
+    "localized": "Upgrade finished successfully. "
+  }
+}

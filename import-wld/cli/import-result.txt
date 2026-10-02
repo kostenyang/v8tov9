@@ -1,0 +1,31 @@
+=== 階段 4 結果:Import vCenter vcf-w01-vc01.home.lab as a VI Domain ===
+task 1e507ca4-abfd-4e7a-ad23-635f51cbd36f
+01:34:51 Pending|0/1|
+01:35:22 In Progress|5/60|Perform Brownfield Environment Validations
+01:35:52 In Progress|5/60|Perform Brownfield Environment Validations
+01:45:57 In Progress|48/60|Add VMs to NSX Distributed Firewall Exclusion List
+01:46:28 Successful|57/57|
+IMPORT-TERMINAL
+建立 2026-10-02T17:31:31Z,完成 01:46:28(本地)→ 約 15 分鐘,57/57 子任務成功
+
+--- /v1/domains
+  vcf-m02    MANAGEMENT  ACTIVE   vCenter=vcf-m02-vc01.home.lab    NSX=vcf-m02-nsx01.home.lab (03321675-7b16-40c5-a45a-50121217aea4)
+  vcf-w01    VI          ACTIVE   vCenter=vcf-w01-vc01.home.lab    NSX=vcf-m02-nsx01.home.lab (03321675-7b16-40c5-a45a-50121217aea4)
+
+--- /v1/clusters
+  vcf-w01-cl01     ACTIVE   hosts=3 isImported=True isDefault=True
+  vcf-m02-cl01     ACTIVE   hosts=4 isImported=True isDefault=True
+
+--- /v1/hosts
+  vcf-m02-esx01.home.lab     ASSIGNED   esxi=9.1.1.0.25714478       domain=083d4bfe
+  vcf-m02-esx02.home.lab     ASSIGNED   esxi=9.1.1.0.25714478       domain=083d4bfe
+  vcf-m02-esx03.home.lab     ASSIGNED   esxi=9.1.1.0.25714478       domain=083d4bfe
+  vcf-m02-esx04.home.lab     ASSIGNED   esxi=9.1.1.0.25714478       domain=083d4bfe
+  vcf-w01-esx01.home.lab     ASSIGNED   esxi=8.0.3-24280767         domain=61bc9cc1
+  vcf-w01-esx02.home.lab     ASSIGNED   esxi=8.0.3-24280767         domain=61bc9cc1
+  vcf-w01-esx03.home.lab     ASSIGNED   esxi=8.0.3-24280767         domain=61bc9cc1
+
+--- /v1/nsxt-clusters(這套 NSX 現在服務哪些網域)
+   vcf-m02-nsx01.home.lab | version 9.1.1.0.25691509
+      domain: vcf-m02 083d4bfe-33d9-4935-b9e9-fdf53e14d95b
+      domain: vcf-w01 61bc9cc1-7260-4125-a054-5f39f677574b

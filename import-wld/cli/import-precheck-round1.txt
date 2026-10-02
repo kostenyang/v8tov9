@@ -1,0 +1,84 @@
+=== 匯入 precheck 第一輪(2026-10-03 00:24)===
+68 Passed / 3 Errors / 4 Warnings
+
+Compatibility validation                                               :: Success
+Cluster Distributed Resource Scheduler (DRS)                           :: Error
+Cluster DVS presence                                                   :: Success
+Conforming cluster present                                             :: Success
+DVS version                                                            :: Success
+ESXi vmotion IP address family                                         :: Success
+ESXi upgrade policy validation across vCenter and SDDC Manager         :: Warning
+Host certificate CN/SAN                                                :: Success
+Host name                                                              :: Success
+NTP service                                                            :: Success
+Host connectivity                                                      :: Success
+Host minimum version                                                   :: Success
+Verify cluster-host topology                                           :: Success
+Host stateless check                                                   :: Success
+ESXi VMKernel adapter traffic type check                               :: Success
+vCenter Server SDDC Manager extension presence                         :: Success
+No unsupported Legacy VxRail extension in vCenter Server               :: Success
+Import NSX-vCenter compute manager                                     :: Error
+Check NSX Manager host scale support                                   :: Success
+Compatibility validation for vCenter and NSX                           :: Success
+Cluster common datastore check.                                        :: Success
+SDDC Manager DNS server                                                :: Success
+SDDC Manager NTP server                                                :: Success
+vCenter VM co-located                                                  :: Success
+vCenter IP address family                                              :: Success
+vCenter Server is above 9.2.0.0 with VxRail Next extension present     :: Success
+vCenter root password                                                  :: Success
+vCenter SSH Login enabled                                              :: Success
+vCenter to SDDC Manager time difference                                :: Success
+vCenter Server virtual machine distributed virtual port group and traf :: Success
+                                                                       :: Success
+Lookup service availability                                            :: Success
+Vpxd service availability                                              :: Success
+vCenter Server appliance update status validator                       :: Success
+Check if Customer Experience Improvement Program is configured on vCen :: Success
+vCenter Server Connection Latency                                      :: Success
+vCenter FQDN is resolvable check                                       :: Success
+vCenter Server is in ELM                                               :: Success
+vCenter FQDN DNS aliases check                                         :: Success
+vCenter HA disabled check                                              :: Success
+vCenter Server minimum version                                         :: Success
+vCenter NTP configured check                                           :: Success
+Scale limits validation                                                :: Success
+Cluster is vSphere Lifecycle Manager (vLCM) image based                :: Error
+VMs not pinned to host                                                 :: Success
+vSAN cluster ESXi VMKernel adapter traffic type                        :: Success
+Cross-vCenter vSAN datastore sources warning                           :: Success
+
+=== 三個 Error 的細節 ===
+[1] Cluster Distributed Resource Scheduler (DRS)
+    Description : Check if cluster has DRS enabled
+    Error       : Cluster does not have DRS fully automated
+    Object      : vcf-w01-cl01 cluster
+    Impact rule : (numOfHostsInCluster == 1) || (isDrsEnabled && drsAutomationLevel == 'fullyAutomated')
+    Remediation : Configure DRS to be fully automated on the cluster
+
+[2] Import NSX-vCenter compute manager        ★ 共用 NSX 的關鍵
+    Description : Check if NSX has a compute manager registered for the vCenter for import
+    Error       : Could not find compute manager for vCenter vcf-w01-vc01.home.lab
+                  in NSX vcf-m02-nsx01.home.lab.
+    Object      : vcf-m02-nsx01.home.lab NsxtCluster
+    Remediation : Register a compute manager for vCenter vcf-w01-vc01.home.lab
+                  in NSX vcf-m02-nsx01.home.lab and retry.
+    → 共用 NSX 本身沒有被擋;前置條件是那套 NSX 必須先把要匯入的 vCenter
+      註冊成 Compute Manager。同一頁的
+        Check NSX Manager host scale support     :: Success
+        Compatibility validation for vCenter and NSX :: Success
+      兩項都過了。
+
+[3] Cluster is vSphere Lifecycle Manager (vLCM) image based
+    Description : Check if the cluster is vLCM image based
+    Error       : Cluster is not vSphere Lifecycle Manager (vLCM) image based
+    Object      : vcf-w01-cl01 cluster   (impact rule: isVlcm == true)
+    Remediation : Please make sure cluster is vLCM image based
+
+=== Warning(4 個物件,同一項)===
+ESXi upgrade policy validation across vCenter and SDDC Manager
+  Failure Action Name        : vCenter=Retry   vs SDDC Manager 預設=FailTask
+  Failure Action Retry Count : vCenter=3       vs SDDC Manager 預設=0
+  Failure Action Retry Delay : vCenter=300     vs SDDC Manager 預設=null
+  Remediation: 之後在 "ESX Configure Update" 的 Upgrade Options 頁調整即可,不擋匯入。

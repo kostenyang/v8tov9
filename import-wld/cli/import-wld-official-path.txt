@@ -1,0 +1,28 @@
+=== 官方依據:把既有 vCenter 匯入成 VI workload domain(VCF 9.1)===
+techdocs 9.1 / Building Your Private Cloud Infrastructure / Working with Workload Domains
+  "Import an Existing vCenter to Create a Workload Domain"
+
+UI 路徑(VCF Operations):
+  Operate → Overview/Inventory → Detailed View → 展開 VCF Instances → 選目標 VCF Instance
+  → 「Add workload domain」下拉 → 「Import a vCenter」
+
+前置條件(節錄):
+  - vCenter 最低 8.0 Update 3a;ESX 最低 8.0 Update 3
+  - inventory 內所有 ESX 主機要用 FQDN,不可用短名
+  - 既有 vCenter 要開 SSH
+
+NSX:
+  - 可有可無;既有的 NSX Manager 可以一起匯入
+  - 「Shared NSX instances are supported across multiple vCenter instances」
+    → 多個 vCenter 共用同一套 NSX 是支援的
+  - 🔴 "NSX 9.1 does not support vCenter 8.0 Update 3a or later"
+    → 若要用 NSX 9.1,vCenter 必須先升到 9.1
+    ★ 這就是本 lab「只升 vCenter 到 9.1.1、主機維持 8.0U3b」的理由
+
+精靈頁面:
+  1 General Information     —— workload domain 名稱
+  2 Specify a vCenter       —— 選既有 vCenter / 填外部憑證;可選 NSX Manager
+  3 Certificate Confirmation—— 確認 vCenter / NSX 憑證指紋
+  4 NSX Configuration       —— vCenter 沒有 NSX 時:新建 或 join 既有 NSX instance ★
+  5 Prechecks               —— 驗證
+  6 Review & Finish

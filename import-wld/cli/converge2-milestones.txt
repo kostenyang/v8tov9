@@ -1,0 +1,14 @@
+VCF Installer  : vcf-m02-inst06.home.lab
+vcfInstanceName: vcf-m02-converge
+deploymentType : VMware Cloud Foundation Deployment
+sddcId         : 012a6214-87cc-4a99-824b-bedac64907a6
+status         : COMPLETED_WITH_SUCCESS
+subtasks       : 181 / 181 succeeded
+
+--- Milestones ---
+  Deploy SDDC Manager                                     COMPLETED_WITH_SUCCESS
+  Convert the existing vCenter to a new VCF instance      COMPLETED_WITH_SUCCESS
+  Deploy and configure NSX                                COMPLETED_WITH_SUCCESS
+  Deploy and configure VCF Management Platform            COMPLETED_WITH_SUCCESS
+  Deploy and configure the operations appliance           COMPLETED_WITH_SUCCESS
+  Deploy and configure VCF Management Services            COMPLETED_WITH_SUCCESS

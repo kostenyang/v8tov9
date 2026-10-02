@@ -1,0 +1,15 @@
+=== w01 升級後 2026-10-03 00:00:18 ===
+FullName:     VMware vCenter Server 9.1.1.0.25712839
+Version:      9.1.1
+Build:        25712839
+--- hosts
+  vcf-w01-esx01.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+  vcf-w01-esx02.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+  vcf-w01-esx03.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+--- datastore
+Name:        vsanDatastore
+  Capacity:  1500.0 GB
+  Free:      1312.1 GB
+--- VMs
+vcf-w01-vc01
+vcf-w01-vc01-new

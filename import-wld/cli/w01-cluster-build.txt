@@ -1,0 +1,38 @@
+[14:44:34] connecting vcf-w01-vc01.home.lab
+[14:44:37] cluster vcf-w01-cl01, hosts now: vcf-w01-esx01.home.lab
+[14:44:37]   adding vcf-w01-esx02.home.lab ...
+[14:44:51]   adding vcf-w01-esx03.home.lab ...
+[14:45:03] hosts: vcf-w01-esx01.home.lab, vcf-w01-esx02.home.lab, vcf-w01-esx03.home.lab
+[14:45:03] creating VDS vcf-w01-cl01-vds01 (MTU 9000)
+[14:45:04]   portgroup w01-DPortGroup-VM-Mgmt (VLAN 0)
+[14:45:05]   portgroup vcf-w01-cl01-vds01-pg-vmotion (VLAN 15)
+[14:45:06]   portgroup vcf-w01-cl01-vds01-pg-vsan (VLAN 16)
+[14:45:08]   adding vcf-w01-esx01.home.lab to VDS
+[14:45:11]   attaching vmnic1 on vcf-w01-esx01.home.lab
+[14:45:11]   vcf-w01-esx01.home.lab VDS uplinks: vmnic1
+[14:45:11]   moving VM vcf-w01-vc01 NIC 'VM Network' -> w01-DPortGroup-VM-Mgmt
+[14:45:13]   migrating vmk0 + vmnic0 on vcf-w01-esx01.home.lab
+[14:45:14]   adding vcf-w01-esx02.home.lab to VDS
+[14:45:17]   attaching vmnic1 on vcf-w01-esx02.home.lab
+[14:45:17]   vcf-w01-esx02.home.lab VDS uplinks: vmnic1
+[14:45:17]   migrating vmk0 + vmnic0 on vcf-w01-esx02.home.lab
+[14:45:19]   adding vcf-w01-esx03.home.lab to VDS
+[14:45:24]   attaching vmnic1 on vcf-w01-esx03.home.lab
+[14:45:24]   vcf-w01-esx03.home.lab VDS uplinks: vmnic1
+[14:45:24]   migrating vmk0 + vmnic0 on vcf-w01-esx03.home.lab
+[14:45:25]   vcf-w01-esx01.home.lab new vmk vmotion 192.168.25.11
+[14:45:27]   vcf-w01-esx01.home.lab new vmk vsan 192.168.26.11
+[14:45:34]   vcf-w01-esx01.home.lab vmk0: 關掉 vmotion/vsan
+[14:45:42]   vcf-w01-esx02.home.lab new vmk vmotion 192.168.25.12
+[14:45:44]   vcf-w01-esx02.home.lab new vmk vsan 192.168.26.12
+[14:45:51]   vcf-w01-esx02.home.lab vmk0: 關掉 vmotion/vsan
+[14:45:58]   vcf-w01-esx03.home.lab new vmk vmotion 192.168.25.13
+[14:46:00]   vcf-w01-esx03.home.lab new vmk vsan 192.168.26.13
+[14:46:07]   vcf-w01-esx03.home.lab vmk0: 關掉 vmotion/vsan
+[14:46:16]   vcf-w01-esx01.home.lab disk group exists
+[14:46:18]   vcf-w01-esx02.home.lab disk group: cache naa.6000c29805fbc9dff5c7dd3a206f18cf + capacity naa.6000c2923f4a33bb749463817d58107f
+[14:51:47] connecting vcf-w01-vc01.home.lab
+[14:51:50] cluster vcf-w01-cl01, hosts now: vcf-w01-esx01.home.lab, vcf-w01-esx02.home.lab, vcf-w01-esx03.home.lab
+[14:51:50] hosts: vcf-w01-esx01.home.lab, vcf-w01-esx02.home.lab, vcf-w01-esx03.home.lab
+[14:51:52]   vcf-w01-esx01.home.lab disk group exists
+[14:51:54]   vcf-w01-esx02.home.lab disk group: cache naa.6000c29805fbc9dff5c7dd3a206f18cf + capacity naa.6000c2923f4a33bb749463817d58107f

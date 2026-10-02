@@ -1,0 +1,27 @@
+=== w01 workload domain 來源端(升級前)2026-10-02 22:40:27 ===
+FullName:     VMware vCenter Server 8.0.3 build-24853646
+Version:      8.0.3
+Build:        24853646
+--- hosts
+  vcf-w01-esx01.home.lab: 
+  vcf-w01-esx02.home.lab: 
+  vcf-w01-esx03.home.lab: 
+--- datastore
+Name:        vsanDatastore
+  Capacity:  1500.0 GB
+  Free:      1388.5 GB
+--- vmk(vMotion/vSAN 走 vmk0)
+Device:            vmk0	IP address:        10.0.1.46
+Device:            vmk0	IP address:        10.0.1.47
+Device:            vmk0	IP address:        10.0.1.48
+--- host 版本(正確抓法)
+/vcf-w01-dc01/host/vcf-w01-cl01/vcf-w01-esx01.home.lab
+/vcf-w01-dc01/host/vcf-w01-cl01/vcf-w01-esx02.home.lab
+/vcf-w01-dc01/host/vcf-w01-cl01/vcf-w01-esx03.home.lab
+--- cluster
+3
+--- vsan
+  vcf-w01-esx01.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+  vcf-w01-esx02.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+  vcf-w01-esx03.home.lab : VMware ESXi 8.0.3 build-24280767 connected 
+--- vSAN disk groups

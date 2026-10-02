@@ -1,0 +1,23 @@
+=== 繞路紀錄:VCF Installer 的 workflowType = VCF_EXTEND 不是 workload domain import ===
+POST https://<installer>/v1/sddcs/validations
+
+試法 1  sddcManagerSpec.useExistingDeployment=true, hostname=vcf-m02-sddcm01.home.lab
+  → EXISTING_SDDC_HOSTNAME_VALIDATION_ERROR.error
+    "Incorrect SDDC Manager hostname 'vcf-m02-sddcm01.home.lab' provided whilst using
+     the option to reuse VCF Installer, expected hostname 'vcf-m02-inst06.home.lab'"
+
+試法 2  sddcManagerSpec.hostname 改成 installer 自己
+  → EXISTING_SDDC_VALIDATION_FLIP_ERROR.error
+    "Existing SDDC Manager scenario is selected, but VCF Installer is not located on
+     any of the given ESX hosts"
+
+結論:sddcManagerSpec.useExistingDeployment=true 的語意是「把這台 VCF Installer 本體
+      轉成 SDDC Manager」,不是「接上既有的 SDDC Manager」。VCF_EXTEND 是把既有的
+      VVF 補成 VCF(補管理元件),不是把既有 vSphere 併成 VI workload domain。
+      workload domain 的 import 要走 VCF Operations UI。
+
+附帶收穫(VCF_EXTEND 驗證通過的欄位,仍可留做參考):
+  vspClusterSpec.useExistingDeployment = true
+  vspClusterSpec.systemUserPassword    = <VSP vmware-system-user 密碼>   ← 欄位名不好猜
+  以上兩個補齊後,Deployment Specification / Security Configuration /
+  DNS Resolution / Versions and Bundles / Password Policies / Network Configuration 全部 SUCCEEDED。
