@@ -1,0 +1,51 @@
+=== converge 時沿用「既有的 VCF Operations + License Server」:spec 欄位實證 ===
+探測方式:拿 m02 的 converge spec,把 Ops / License 改成 useExistingDeployment,
+          指向已經存在的 vcf-m02-ops01 / vcf-m02-license,送 /v1/sddcs/validations。
+
+--- 第一輪:只加 useExistingDeployment,沒給指紋
+  EXPECTED_EXISTING_SSL.error : Expected sslThumbprint to be set in the provided input spec for: vcf-m02-ops01.home.lab
+  → 既有元件每個 node 都要 sslThumbprint(SHA256)
+
+--- 第二輪:補上 sslThumbprint 之後
+  [SUCCEEDED] Deployment Specification
+  [SUCCEEDED] Security Configuration
+  [SUCCEEDED] DNS Resolution
+  [SUCCEEDED] Versions and Bundles
+  [SUCCEEDED] Existing SDDC Manager Configuration
+  [SUCCEEDED] Password Policies
+  [SUCCEEDED] VCF Installer Capacity (3 項)
+  → spec 形狀本身完全通過。剩下的錯誤全部是因為我指向的是「已經 converge 完」的 m02,
+     IP 都在用、元件都已註冊,換成乾淨環境就不會有。
+
+--- 新出現的驗證階段:Brownfield VCF Management Services validation
+  BROWNFIELD_VCF_OPERATIONS_VSP_REGISTRATION_VALIDATION.error
+      VCF Operations ... is already registered with VCF services runtime
+      → 要沿用的 Ops 必須【還沒】被任何 VSP(VCF services runtime)註冊過
+  BROWNFIELD_VCF_LICENSE_SERVER_ALREADY_SET.error
+      Existing VCF Operations ... is already integrated with the provided License Server
+      → 那台 Ops 不能已經跟別的 License Server 綁定
+  VALIDATE_VIDB_DEPLOYMENT_ALREADY_EXISTS.warning
+      → vIDB 已存在只是 warning,不擋
+
+--- spec 寫法(密碼/指紋請自行代入)
+"vcfOperationsSpec": {
+  "useExistingDeployment": true,
+  "adminUserPassword": "<ops admin 密碼>",
+  "nodes": [
+    { "hostname": "<ops FQDN>",
+      "type": "master",
+      "rootUserPassword": "<ops root 密碼>",
+      "sslThumbprint": "<SHA256 指紋>" }        <-- 必填
+  ]
+},
+"licenseServerSpec": {
+  "useExistingDeployment": true,
+  "hostname": "<license server FQDN>",
+  "rootUserPassword": "<root 密碼>",
+  "adminUserPassword": "<admin 密碼>",
+  "sslThumbprint": "<SHA256 指紋>"
+}
+
+--- 取指紋
+echo | openssl s_client -connect <fqdn>:443 -servername <fqdn> 2>/dev/null \
+  | openssl x509 -noout -fingerprint -sha256

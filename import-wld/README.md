@@ -5,7 +5,7 @@
 > 以 VI workload domain 匯入既有的 VCF 9.1.1 執行個體 → **與管理網域共用同一套 NSX**。
 > 匯入 57/57 子任務成功,約 15 分鐘;主機全程維持 ESXi 8.0.3-24280767。
 
-成品文件:[`VCF911-CoverageLab-ImportWLD.docx`](VCF911-CoverageLab-ImportWLD.docx)(29 頁 / 27 張逐步截圖)
+成品文件:[`VCF911-CoverageLab-ImportWLD.docx`](VCF911-CoverageLab-ImportWLD.docx)(**45 頁 / 55 張逐步截圖**,從 converge 第一步到匯入驗收一份看完)
 
 ## 結論
 
@@ -60,7 +60,7 @@ Operate → Inventory → Detailed View → 展開 VCF Instances → 選目標 V
 |------|------|
 | `VCF911-CoverageLab-ImportWLD.docx` | 成品文件 |
 | `PHASE4-import-runbook.md` | 匯入 runbook |
-| `shots/` | 逐步截圖 |
+| `shots/` | 逐步截圖(`cv-*` 是階段 1 converge 那一輪的完整 step-by-step) |
 | `cli/` | API / CLI 佐證(密碼已清) |
 | `scripts/` | 建來源端與驗收用的腳本 |
 

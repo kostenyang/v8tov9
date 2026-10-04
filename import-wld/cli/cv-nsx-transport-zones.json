@@ -1,0 +1,93 @@
+{
+  "results" : [ {
+    "transport_type" : "OVERLAY",
+    "transport_zone_profile_ids" : [ {
+      "resource_type" : "BfdHealthMonitoringProfile",
+      "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+    } ],
+    "nested_nsx" : false,
+    "is_default" : true,
+    "forwarding_mode" : "IPV4_ONLY",
+    "resource_type" : "TransportZone",
+    "id" : "1b3a2f36-bfd1-443e-a0f6-4de01abc963e",
+    "display_name" : "nsx-overlay-transportzone",
+    "tags" : [ {
+      "scope" : "vcf-orchestration",
+      "tag" : "vcf"
+    } ],
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777404308,
+    "_create_user" : "system",
+    "_last_modified_time" : 1790777880359,
+    "_last_modified_user" : "svc-vcf-m02-sddcm01-vcf-m02-2971",
+    "_revision" : 1,
+    "_schema" : "/v1/schema/TransportZone"
+  }, {
+    "transport_type" : "VLAN",
+    "transport_zone_profile_ids" : [ {
+      "resource_type" : "BfdHealthMonitoringProfile",
+      "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+    } ],
+    "nested_nsx" : false,
+    "is_default" : true,
+    "resource_type" : "TransportZone",
+    "id" : "a95c914d-748d-497c-94ab-10d4647daeba",
+    "display_name" : "nsx-vlan-transportzone",
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777404626,
+    "_create_user" : "system",
+    "_last_modified_time" : 1790777404626,
+    "_last_modified_user" : "system",
+    "_revision" : 0,
+    "_schema" : "/v1/schema/TransportZone"
+  }, {
+    "transport_type" : "VLAN",
+    "transport_zone_profile_ids" : [ {
+      "resource_type" : "BfdHealthMonitoringProfile",
+      "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+    } ],
+    "nested_nsx" : false,
+    "is_default" : false,
+    "resource_type" : "TransportZone",
+    "id" : "aac06966-61dc-466c-9801-5c5130629b7c",
+    "display_name" : "vcf-m02-cl01-vds01-vlan-tz",
+    "tags" : [ {
+      "scope" : "Created by",
+      "tag" : "VCF"
+    } ],
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777880492,
+    "_create_user" : "svc-vcf-m02-sddcm01-vcf-m02-2971",
+    "_last_modified_time" : 1790777880492,
+    "_last_modified_user" : "svc-vcf-m02-sddcm01-vcf-m02-2971",
+    "_revision" : 0,
+    "_schema" : "/v1/schema/TransportZone"
+  }, {
+    "transport_type" : "VLAN",
+    "transport_zone_profile_ids" : [ {
+      "resource_type" : "BfdHealthMonitoringProfile",
+      "profile_id" : "52035bb3-ab02-4a08-9884-18631312e50a"
+    } ],
+    "nested_nsx" : false,
+    "is_default" : false,
+    "origin_id" : "50 3b 0c 00 7b ca 07 5b-c4 a7 f5 a4 21 88 7a 73",
+    "resource_type" : "TransportZone",
+    "id" : "89062255-db3b-3aa7-940e-c520fd5504c7",
+    "display_name" : "nsx.vlan-tz.security.6f626821-6381-497e-bbc2-fa6cb777908e.vcf-m02-cl01-vds01",
+    "description" : "This is a system generated Transport Zone for NSX on DVPGs. A Transport Zone is created for every DVS specified in the Transport Node Profile. When NSX on DVPGs is enabled on the cluster, the system will create Distributed Port Group Segments under this Transport Zone.",
+    "_system_owned" : false,
+    "_protection" : "NOT_PROTECTED",
+    "_create_time" : 1790777884034,
+    "_create_user" : "svc-vcf-m02-sddcm01-vcf-m02-2971",
+    "_last_modified_time" : 1790777884034,
+    "_last_modified_user" : "svc-vcf-m02-sddcm01-vcf-m02-2971",
+    "_revision" : 0,
+    "_schema" : "/v1/schema/TransportZone"
+  } ],
+  "result_count" : 4,
+  "sort_by" : "display_name",
+  "sort_ascending" : true
+}

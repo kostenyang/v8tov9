@@ -1,0 +1,14 @@
+=== SDDC Manager inventory (10.0.1.18) 2026-10-01 02:47:27 ===
+--- /v1/domains
+    vcf-m02 | ACTIVE
+--- /v1/clusters
+    vcf-m02-cl01 | ACTIVE
+--- /v1/hosts
+    vcf-m02-esx01.home.lab | ASSIGNED
+    vcf-m02-esx02.home.lab | ASSIGNED
+    vcf-m02-esx03.home.lab | ASSIGNED
+    vcf-m02-esx04.home.lab | ASSIGNED
+--- /v1/nsxt-clusters
+    vcf-m02-nsx01.home.lab | ACTIVE
+--- /v1/vcenters
+    vcf-m02-vc01.home.lab | ACTIVE

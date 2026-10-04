@@ -1,0 +1,15 @@
+# POST /v1/sddcs/validations(變體 A,最終一輪)
+execution: COMPLETED | result: WARNING
+  Deployment Specification                       SUCCEEDED
+  Security Configuration                         SUCCEEDED
+  DNS Resolution                                 SUCCEEDED
+  Versions and Bundles                           SUCCEEDED
+  Existing SDDC Manager Configuration            SUCCEEDED
+  Password Policies                              SUCCEEDED
+  Network Configuration                          SUCCEEDED
+  Existing Components                            WARNING
+      ! cluster vcf-m02-cl01: Cluster is vSphere Lifecycle Manager (vLCM) image based.
+        Please check vCenter UI -> Cluster -> Updates -> Hosts -> Image -> Check Compliance.
+  VCF Installer Required Capacity Calculation    SUCCEEDED
+  VCF Installer Available Capacity Calculation   SUCCEEDED
+  VCF Installer Capacity Validation              SUCCEEDED
