@@ -1,0 +1,56 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:#fff;padding:26px 32px;width:1240px}
+h1{font-size:23px;color:#1F4E79}
+.sub{font-size:13.5px;color:#777;margin:4px 0 20px}
+.row{display:flex;gap:22px;align-items:stretch}
+.dom{flex:1;border:2px solid #1F4E79;border-radius:8px;overflow:hidden}
+.dom .hd{background:#1F4E79;color:#fff;padding:8px 13px;font-size:15px;font-weight:bold}
+.dom .hd small{font-weight:normal;opacity:.85;font-size:12px}
+.dom .bd{padding:11px 13px;font-size:13px;line-height:1.75;background:#F7FAFD}
+.dom .bd code{background:#eef3f8;padding:1px 5px;border-radius:3px;font-family:Consolas,monospace;font-size:12px}
+.pill{display:inline-block;font-size:11.5px;border-radius:4px;padding:1px 8px;margin-left:5px}
+.g{background:#E8F5E9;color:#2E7D32;border:1px solid #b6ddba}
+.y{background:#FFF6E5;color:#8a6100;border:1px solid #e8cf9a}
+.nsx{margin-top:20px;border:2.5px solid #2E7D32;border-radius:8px;background:#F3FAF4}
+.nsx .hd{background:#2E7D32;color:#fff;padding:8px 13px;font-size:15px;font-weight:bold}
+.nsx .bd{padding:12px 15px;font-size:13.5px;line-height:1.8}
+.nsx .bd code{background:#e3f1e5;padding:1px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:12.5px}
+.link{text-align:center;color:#2E7D32;font-size:12.5px;margin:9px 0 2px}
+.tbl{width:100%;border-collapse:collapse;margin-top:11px;font-size:12.5px}
+.tbl th{background:#1F4E79;color:#fff;text-align:left;padding:5px 9px;font-weight:600}
+.tbl td{border-bottom:1px solid #dde6ef;padding:5px 9px}
+.tbl tr:nth-child(even) td{background:#f7f9fc}
+.no{color:#C00000;font-weight:bold}
+.yes{color:#2E7D32;font-weight:bold}
+</style></head><body>
+<h1>匯入後的最終關係 — 兩個網域共用同一套 NSX</h1>
+<div class="sub">證據:兩個 domain 的 <code>nsxtCluster.id</code> 完全相同,<code>/v1/nsxt-clusters</code> 同一筆記錄下列著兩個 domain</div>
+
+<div class="row">
+  <div class="dom"><div class="hd">vcf-m02 &nbsp;<small>MANAGEMENT</small></div>
+    <div class="bd">vCenter <code>vcf-m02-vc01</code> 9.1.1.0.25712839<br>
+    ESXi ×4 &nbsp;<code>9.1.1.0.25714478</code><br>
+    cluster <code>vcf-m02-cl01</code> <span class="pill g">isImported = True</span></div></div>
+  <div class="dom"><div class="hd">vcf-w01 &nbsp;<small>VI(imported)</small></div>
+    <div class="bd">vCenter <code>vcf-w01-vc01</code> 9.1.1.0.25712839<br>
+    ESXi ×3 &nbsp;<code>8.0.3-24280767</code> <span class="pill y">沒升,維持 8.0 U3b</span><br>
+    cluster <code>vcf-w01-cl01</code> <span class="pill g">isImported = True</span></div></div>
+</div>
+
+<div class="link">▼　兩者的 nsxtCluster 指向同一個物件　▼</div>
+
+<div class="nsx"><div class="hd">vcf-m02-nsx01.home.lab &nbsp;— NSX 9.1.1.0.25691509</div>
+  <div class="bd">
+  <code>nsxtCluster.id = 03321675-7b16-40c5-a45a-50121217aea4</code>&nbsp; 兩個 domain 完全相同<br>
+  Compute Manager:<code>vcf-m02-vc01.home.lab</code>、<code>vcf-w01-vc01.home.lab</code>（兩個 vCenter）
+  <table class="tbl">
+    <tr><th style="width:36%">NSX 物件</th><th>匯入後狀態</th></tr>
+    <tr><td>Compute Manager</td><td><span class="yes">兩個 vCenter 都在</span></td></tr>
+    <tr><td>Compute Collection</td><td><span class="yes">看得到 vcf-m02-cl01 與 vcf-w01-cl01</span></td></tr>
+    <tr><td>Host Transport Node</td><td><span class="no">只有管理網域那 4 台;w01 的 3 台沒有被 prep</span></td></tr>
+    <tr><td>Transport Node Collection</td><td><span class="no">只有 1 個,對應 vcf-m02-cl01</span></td></tr>
+  </table>
+  </div></div>
+</body></html>

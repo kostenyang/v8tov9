@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:#fff;padding:28px 34px;width:1360px}
+h1{font-size:25px;color:#1F4E79;margin-bottom:4px}
+.sub{font-size:14px;color:#777;margin-bottom:22px}
+.stage{display:flex;align-items:stretch;margin-bottom:0}
+.tag{flex:0 0 112px;background:#1F4E79;color:#fff;border-radius:7px 0 0 7px;
+     display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px}
+.tag b{font-size:19px;line-height:1.15}
+.tag span{font-size:12px;opacity:.85;margin-top:3px}
+.box{flex:1;border:2px solid #1F4E79;border-left:none;border-radius:0 7px 7px 0;padding:12px 16px;background:#F7FAFD}
+.box h3{font-size:16px;color:#1F4E79;margin-bottom:5px}
+.box .d{font-size:13.5px;color:#333;line-height:1.65}
+.box .d code{background:#eef3f8;padding:1px 5px;border-radius:3px;font-family:Consolas,monospace;font-size:12.5px}
+.res{display:inline-block;margin-top:7px;font-size:12.5px;background:#E8F5E9;color:#2E7D32;
+     border:1px solid #b6ddba;border-radius:4px;padding:2px 9px}
+.res.warn{background:#FFF6E5;color:#8a6100;border-color:#e8cf9a}
+.arrow{height:26px;display:flex;align-items:center;padding-left:52px}
+.arrow:before{content:"";width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;
+     border-top:13px solid #9bb6cf;margin-left:-9px}
+.arrow span{font-size:12.5px;color:#7a8ea1;margin-left:12px}
+.note{margin-top:18px;border-left:4px solid #C00000;background:#FDECEA;padding:9px 14px;font-size:13px;color:#8a1f13;border-radius:0 4px 4px 0}
+</style></head><body>
+<h1>VCF 9.1.1 Coverage Lab — 四階段流程</h1>
+<div class="sub">既有 vSphere converge 成管理網域,再把另一套 vSphere 匯入成工作負載網域並共用同一套 NSX</div>
+
+<div class="stage"><div class="tag"><b>階段 1</b><span>converge</span></div>
+<div class="box"><h3>既有 vSphere → VCF 9.1.1 管理網域 <code>vcf-m02</code></h3>
+<div class="d">VCF Installer 9.1.1 · <code>workflowType: VCF</code> · 既有 vCenter <code>useExistingDeployment: true</code><br>
+NSX 新部但 <code>skipNsxOverlayOverManagementNetwork: true</code>,刻意不給 TEP → 主機成為 vtepless transport node</div>
+<span class="res">COMPLETED_WITH_SUCCESS　181 / 181　5 小時 20 分</span></div></div>
+
+<div class="arrow"><span>管理網域就緒,NSX 為 <b>vcf-m02-nsx01</b>(9.1.1)</span></div>
+
+<div class="stage"><div class="tag"><b>階段 2</b><span>建來源端</span></div>
+<div class="box"><h3>另建一套獨立 vSphere(沒有被任何 SDDC Manager 納管)</h3>
+<div class="d"><code>vcf-w01-vc01</code> 8.0.3 + ESXi 8.0 U3b ×3 + vSAN 1500 GB<br>
+刻意做成「客戶現場」的樣子,用 vcsa-deploy 單節點 vSAN 引導再補齊叢集</div>
+<span class="res">3 台主機 · vSAN 1500 GB</span></div></div>
+
+<div class="arrow"><span>只動 vCenter,主機完全不碰</span></div>
+
+<div class="stage"><div class="tag"><b>階段 3</b><span>升 vCenter</span></div>
+<div class="box"><h3>vCenter 8.0.3 → 9.1.1(migration-based)</h3>
+<div class="d">範本用 <code>embedded_vCSA_on_VC.json</code>(透過 vCenter 部署,才接得上 VDS static-binding portgroup)<br>
+部新 appliance 拿臨時 IP → 匯出資料 → 舊的關機 → 新的接管原 FQDN/IP　<b>三台主機維持 ESXi 8.0 U3b</b></div>
+<span class="res">Upgrade finished successfully　50 分鐘</span></div></div>
+
+<div class="arrow"><span>★ 為什麼一定要升:NSX 9.1 不支援 vCenter 8.0 U3a 以後的版本</span></div>
+
+<div class="stage"><div class="tag"><b>階段 4</b><span>匯入</span></div>
+<div class="box"><h3>VCF Operations → Add workload domain → <b>Import a vCenter</b></h3>
+<div class="d">入口不在 VCF Installer(<code>workflowType: VCF_EXTEND</code> 是「VVF 補成 VCF」,不是匯入)<br>
+精靈第 2 頁把 <b>NSX Manager VIP 指向管理網域正在用的 vcf-m02-nsx01</b> → 這就是共用 NSX</div>
+<span class="res warn">precheck 第一輪 68 Passed / 3 Errors / 4 Warnings</span>
+<span class="res">修完第二輪 71 / 0 / 1 → 匯入 57 / 57,約 15 分鐘</span></div></div>
+
+<div class="note">🔴 共用 NSX ≠ 主機自動被 prep。匯入只建立「網域 ↔ NSX 執行個體」的歸屬關係;
+w01 的主機沒有變成 host transport node,transport node collection 仍只有管理網域那一個。</div>
+</body></html>

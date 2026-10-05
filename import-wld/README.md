@@ -5,7 +5,7 @@
 > 以 VI workload domain 匯入既有的 VCF 9.1.1 執行個體 → **與管理網域共用同一套 NSX**。
 > 匯入 57/57 子任務成功,約 15 分鐘;主機全程維持 ESXi 8.0.3-24280767。
 
-成品文件:[`VCF911-CoverageLab-ImportWLD.docx`](VCF911-CoverageLab-ImportWLD.docx)(**45 頁 / 55 張逐步截圖**,從 converge 第一步到匯入驗收一份看完)
+成品文件:[`VCF911-CoverageLab-ImportWLD.docx`](VCF911-CoverageLab-ImportWLD.docx)(**50 頁 / 62 張圖**,含 2 張流程圖,從 converge 第一步到匯入驗收一份看完)
 
 ## 結論
 
@@ -78,3 +78,26 @@ GET /v1/hosts
 ```
 
 完整輸出見 [`cli/import-result.txt`](cli/import-result.txt) 與 [`cli/shared-nsx-proof.txt`](cli/shared-nsx-proof.txt)。
+
+## 延伸題:既有的 VCF Operations + License Server 怎麼進管理網域
+
+文件第十一章。UI 路徑:VCF Installer → DEPLOYMENT WIZARD → VMware Cloud Foundation
+→ **Deploy a new VCF fleet** → Plan 第 1 步 **Existing Component** → 勾
+「I have an existing VCF Operations 9.1 instance」。
+
+| 重點 | |
+|------|---|
+| 勾了既有 Operations | 「I have an existing vCenter instance」會自動打勾並鎖住,兩者綁一起 |
+| 建議 | 把 VCF Fleet 建在 Operations 目前所在的 vCenter 上,否則之後只能用 standalone Operations UI 做 scale / 加節點 / 加 cloud proxy |
+| License Server | 既有 Operations 已掛 License Server 的話,連 FQDN 都不用給(Review Prerequisites 頁明示) |
+| JSON 寫法 | `useExistingDeployment: true` + 每個節點的 `sslThumbprint`(少了就 `EXPECTED_EXISTING_SSL.error`) |
+| 多出來的驗證 | Brownfield VCF Management Services validation —— Ops 不能已被 VSP 註冊、不能已綁別的 License Server |
+
+佐證:[`cli/existing-ops-license-spec.txt`](cli/existing-ops-license-spec.txt)、截圖 `shots/eo-*.png`
+
+## 附錄:nested lab 的 vMotion 停滯
+
+建第二套目標端時,vLCM 升主機卡在 EnterMaintenanceMode 2%、手動 vMotion 永遠 0%。
+**不是網路** —— 真因是外層實體 CPU 超配(216 vCPU / 32 核)把 vMotion 的 worker world 餓死。
+判讀關鍵是 `esxcli network ip connection list` 的 Send-Q / Recv-Q。
+完整紀錄:[`cli/m03-vmotion-stall-notes.md`](cli/m03-vmotion-stall-notes.md)
