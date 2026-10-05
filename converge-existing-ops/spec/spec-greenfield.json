@@ -1,0 +1,308 @@
+{
+  "version": "9.1.1.0",
+  "vcfInstanceName": "vcf-m03-instance",
+  "sddcId": "vcf-m03",
+  "ceipEnabled": false,
+  "workflowType": "VCF",
+  "dnsSpec": {
+    "subdomain": "home.lab",
+    "nameservers": [
+      "10.0.0.200"
+    ]
+  },
+  "ntpServers": [
+    "10.0.1.254"
+  ],
+  "hostSpecs": [
+    {
+      "hostname": "vcf-m03-esx01.home.lab",
+      "sslThumbprint": "35:B4:F1:4F:E3:76:94:96:EA:04:2D:D4:1F:A7:68:EE:B4:3E:EB:0D:0D:CB:44:10:90:D2:47:A2:BE:21:38:32",
+      "credentials": {
+        "username": "root",
+        "password": "<REDACTED>"
+      }
+    },
+    {
+      "hostname": "vcf-m03-esx02.home.lab",
+      "sslThumbprint": "6F:31:40:F6:72:4C:32:46:5C:1E:31:26:C5:B0:CF:59:E1:9B:FA:17:2F:D6:F7:63:A8:E9:A4:FB:96:B7:9C:AC",
+      "credentials": {
+        "username": "root",
+        "password": "<REDACTED>"
+      }
+    },
+    {
+      "hostname": "vcf-m03-esx03.home.lab",
+      "sslThumbprint": "E9:0D:D8:52:72:91:17:5C:0F:30:11:5C:6E:8A:CC:AF:AA:45:9C:98:39:36:08:1C:47:19:64:B6:F0:30:24:DE",
+      "credentials": {
+        "username": "root",
+        "password": "<REDACTED>"
+      }
+    },
+    {
+      "hostname": "vcf-m03-esx04.home.lab",
+      "sslThumbprint": "AF:4C:73:56:90:0D:81:13:25:F2:7A:08:BF:8F:DE:96:DC:DD:BF:55:93:92:4F:58:87:68:92:B3:F0:CE:A3:8C",
+      "credentials": {
+        "username": "root",
+        "password": "<REDACTED>"
+      }
+    }
+  ],
+  "networkSpecs": [
+    {
+      "networkType": "MANAGEMENT",
+      "ipAddressVersion": "IPv4",
+      "subnet": "10.0.0.0/23",
+      "gateway": "10.0.0.1",
+      "vlanId": 0,
+      "activeUplinks": [
+        "uplink1",
+        "uplink2"
+      ],
+      "portGroupKey": "vcf-m03-cl01-vds01-pg-esx-mgmt",
+      "standbyUplinks": [],
+      "teamingPolicy": "loadbalance_loadbased"
+    },
+    {
+      "networkType": "VM_MANAGEMENT",
+      "ipAddressVersion": "IPv4",
+      "subnet": "10.0.0.0/23",
+      "gateway": "10.0.0.1",
+      "vlanId": 0,
+      "activeUplinks": [
+        "uplink1",
+        "uplink2"
+      ],
+      "portGroupKey": "vcf-m03-cl01-vds01-pg-vm-mgmt",
+      "standbyUplinks": [],
+      "teamingPolicy": "loadbalance_loadbased"
+    },
+    {
+      "networkType": "VMOTION",
+      "ipAddressVersion": "IPv4",
+      "subnet": "192.168.35.0/24",
+      "gateway": "192.168.35.1",
+      "vlanId": 0,
+      "mtu": 9000,
+      "includeIpAddressRanges": [
+        {
+          "startIpAddress": "192.168.35.11",
+          "endIpAddress": "192.168.35.20"
+        }
+      ],
+      "activeUplinks": [
+        "uplink1",
+        "uplink2"
+      ],
+      "portGroupKey": "vcf-m03-cl01-vds01-pg-vmotion",
+      "standbyUplinks": [],
+      "teamingPolicy": "loadbalance_loadbased"
+    },
+    {
+      "networkType": "VSAN",
+      "ipAddressVersion": "IPv4",
+      "subnet": "192.168.36.0/24",
+      "gateway": "192.168.36.1",
+      "vlanId": 0,
+      "mtu": 9000,
+      "includeIpAddressRanges": [
+        {
+          "startIpAddress": "192.168.36.11",
+          "endIpAddress": "192.168.36.20"
+        }
+      ],
+      "activeUplinks": [
+        "uplink1",
+        "uplink2"
+      ],
+      "portGroupKey": "vcf-m03-cl01-vds01-pg-vsan",
+      "standbyUplinks": [],
+      "teamingPolicy": "loadbalance_loadbased"
+    }
+  ],
+  "vspClusterSpec": {
+    "ipv4Pool": {
+      "ipRange": {
+        "startIpAddress": "10.0.1.80",
+        "endIpAddress": "10.0.1.95"
+      }
+    },
+    "platformFqdn": "vcf-m03-vsp01.home.lab",
+    "instanceFqdn": "vcf-m03-shared01.home.lab",
+    "fleetFqdn": "vcf-m03-fleet01.home.lab",
+    "systemUserPassword": "<REDACTED>",
+    "size": "small_ha",
+    "name": "vcf-m03-vmsp-01",
+    "internalClusterCidrIpv4": "198.18.0.0/15"
+  },
+  "vcfAutomationSpec": {
+    "ipPool": [
+      "10.0.1.96",
+      "10.0.1.97",
+      "10.0.1.98",
+      "10.0.1.99",
+      "10.0.1.100",
+      "10.0.1.101",
+      "10.0.1.102"
+    ],
+    "hostname": "vcf-m03-auto-vip.home.lab",
+    "platformFqdn": "vcf-m03-auto-platform.home.lab",
+    "adminUserPassword": "<REDACTED>",
+    "nodePrefix": "vcf-m03-node-01",
+    "internalClusterCidr": "198.18.0.0/15",
+    "useExistingDeployment": false,
+    "size": "small"
+  },
+  "nsxtSpec": {
+    "transportVlanId": 0,
+    "ipAddressPoolSpec": {
+      "name": "vcf-m03-cl01-tep01",
+      "description": "vcf-m03-cl01-tep01 descr",
+      "subnets": [
+        {
+          "cidr": "192.168.37.0/24",
+          "gateway": "192.168.37.1",
+          "ipAddressPoolRanges": [
+            {
+              "start": "192.168.37.11",
+              "end": "192.168.37.30"
+            }
+          ]
+        }
+      ]
+    },
+    "nsxtManagerSize": "medium",
+    "vipFqdn": "vcf-m03-nsx01.home.lab",
+    "nsxtAdminPassword": "<REDACTED>",
+    "nsxtAuditPassword": "<REDACTED>",
+    "rootNsxtManagerPassword": "<REDACTED>",
+    "useExistingDeployment": false,
+    "nsxtManagers": [
+      {
+        "hostname": "vcf-m03-nsx01a.home.lab"
+      },
+      {
+        "hostname": "vcf-m03-nsx01b.home.lab"
+      },
+      {
+        "hostname": "vcf-m03-nsx01c.home.lab"
+      }
+    ]
+  },
+  "vcfOperationsSpec": {
+    "applianceSize": "small",
+    "adminUserPassword": "<REDACTED>",
+    "loadBalancerFqdn": "",
+    "useExistingDeployment": false,
+    "nodes": [
+      {
+        "hostname": "vcf-m03-ops01.home.lab",
+        "rootUserPassword": "<REDACTED>",
+        "type": "master"
+      },
+      {
+        "hostname": "vcf-m03-ops02.home.lab",
+        "rootUserPassword": "<REDACTED>",
+        "type": "replica"
+      }
+    ]
+  },
+  "vcfOperationsCollectorSpec": {
+    "applianceSize": "small",
+    "hostname": "vcf-m03-opsc01.home.lab",
+    "rootUserPassword": "<REDACTED>",
+    "useExistingDeployment": false
+  },
+  "licenseServerSpec": {
+    "hostname": "vcf-m03-lic01.home.lab"
+  },
+  "vidbSpec": {
+    "hostname": "vcf-m03-vidb.home.lab"
+  },
+  "saltSpec": {},
+  "saltRaasSpec": {},
+  "telemetryAcceptorSpec": {},
+  "fleetLcmSpec": {
+    "hostname": "vcf-m03-fleet01.home.lab"
+  },
+  "sddcLcmSpec": {
+    "hostname": "vcf-m03-shared01.home.lab"
+  },
+  "fleetDepotSpec": {},
+  "vcenterSpec": {
+    "vcenterHostname": "vcf-m03-vc01.home.lab",
+    "adminUserSsoPassword": "<REDACTED>",
+    "rootVcenterPassword": "<REDACTED>",
+    "vmSize": "small",
+    "storageSize": "lstorage",
+    "ssoDomain": "vsphere.local",
+    "useExistingDeployment": false
+  },
+  "clusterSpec": {
+    "datacenterName": "vcf-m03-dc01",
+    "clusterName": "vcf-m03-cl01"
+  },
+  "datastoreSpec": {
+    "vsanSpec": {
+      "vsanDedup": false,
+      "failuresToTolerate": 1,
+      "esaConfig": {
+        "enabled": false,
+        "skipHclAutoDiskClaim": false
+      },
+      "datastoreName": "vsanDatastore",
+      "encryptionConfig": {
+        "dataInTransitConfig": {
+          "enable": false
+        }
+      }
+    }
+  },
+  "dvsSpecs": [
+    {
+      "dvsName": "vcf-m03-cl01-vds01",
+      "networks": [
+        "MANAGEMENT",
+        "VM_MANAGEMENT",
+        "VMOTION",
+        "VSAN"
+      ],
+      "mtu": 9000,
+      "nsxtSwitchConfig": {
+        "transportZones": [
+          {
+            "name": "overlay-tz-mgmt-nsxt",
+            "transportType": "OVERLAY"
+          }
+        ]
+      },
+      "vmnicsToUplinks": [
+        {
+          "id": "vmnic0",
+          "uplink": "uplink1"
+        },
+        {
+          "id": "vmnic1",
+          "uplink": "uplink2"
+        }
+      ],
+      "nsxTeamings": [
+        {
+          "policy": "LOADBALANCE_SRCID",
+          "activeUplinks": [
+            "uplink1",
+            "uplink2"
+          ],
+          "standByUplinks": null
+        }
+      ],
+      "lagSpecs": null
+    }
+  ],
+  "sddcManagerSpec": {
+    "hostname": "vcf-m03-sddcm01.home.lab",
+    "localUserPassword": "<REDACTED>",
+    "rootPassword": "<REDACTED>",
+    "sshPassword": "<REDACTED>",
+    "useExistingDeployment": false
+  }
+}

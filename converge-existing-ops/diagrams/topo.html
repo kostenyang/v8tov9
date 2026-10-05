@@ -1,0 +1,80 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:#fff;padding:26px 32px;width:1340px}
+h1{font-size:23px;color:#1F4E79}
+.sub{font-size:13.5px;color:#777;margin:4px 0 18px}
+.phys{border:2px solid #555;border-radius:8px;margin-bottom:14px}
+.phys .hd{background:#555;color:#fff;padding:7px 13px;font-size:14.5px;font-weight:bold}
+.phys .hd small{font-weight:normal;opacity:.85}
+.phys .bd{padding:13px;display:grid;grid-template-columns:1fr 250px 1fr;gap:14px;background:#fafafa;align-items:start}
+.env{border:2px solid #1F4E79;border-radius:7px;overflow:hidden;background:#fff}
+.env.old{border-color:#B77E00}
+.env.inst{border-color:#6A4C93}
+.env .eh{background:#1F4E79;color:#fff;padding:6px 11px;font-size:13.5px;font-weight:bold}
+.env.old .eh{background:#B77E00}
+.env.inst .eh{background:#6A4C93}
+.env .eb{padding:9px 11px;font-size:12.5px;line-height:1.75}
+code{background:#eef3f8;padding:0 4px;border-radius:3px;font-family:Consolas,monospace;font-size:11.5px}
+.row{display:flex;justify-content:space-between;gap:8px}
+.hosts{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}
+.h{background:#e8eef5;border:1px solid #c3d3e3;border-radius:3px;padding:1px 6px;font-size:11px;font-family:Consolas,monospace}
+.env.old .h{background:#fbf2e0;border-color:#e3cfa0}
+.lbl{color:#888;margin-top:6px}
+.tag{display:inline-block;background:#2E7D32;color:#fff;border-radius:3px;padding:0 6px;font-size:11px;margin-left:4px}
+.tag.n{background:#C62828}
+.net{border:2px solid #2E7D32;border-radius:8px;background:#F3FAF4;padding:11px 14px;font-size:12.5px;line-height:1.85}
+.net b{color:#2E7D32}
+.net code{background:#e3f1e5}
+.foot{margin-top:12px;font-size:12px;color:#777;line-height:1.75}
+.arrow{align-self:center;font-size:26px;color:#6A4C93;flex:0 0 28px;text-align:center}
+</style></head><body>
+
+<h1>圖 1 — 測試拓樸</h1>
+<div class="sub">同一台實體主機上,左邊是「既有環境」(測試前就存在),右邊是給 greenfield bring-up 用的全新乾淨主機</div>
+
+<div class="phys"><div class="hd">實體主機 10.0.0.95 &nbsp;<small>32 核 / 1 TB RAM · 外層 vCenter 10.0.0.101(labvc8 8.0.3)· portgroup Trunk-Nobinding(promiscuous,mgmt untagged)</small></div>
+<div class="bd">
+
+  <div class="env old"><div class="eh">既有環境 &nbsp;舊 m03 叢集<span class="tag">測試前就存在</span></div><div class="eb">
+    <div class="row"><span>vCenter</span><span><code>vcf-m03-vc01</code> 10.0.1.60</span></div>
+    <div class="row"><span><b>VCF Operations 9.1.1</b></span><span><code>vcf-m03-ops01</code> 10.0.1.61</span></div>
+    <div class="row"><span><b>License Server 9.1.1</b></span><span><code>vcf-m03-lic01</code> 10.0.1.62</span></div>
+    <div class="lbl">nested ESXi ×4 · 各 4 vCPU / 64 GB(已瘦身)· vSAN 4 TB</div>
+    <div class="hosts"><span class="h">esx01 .56</span><span class="h">esx02 .57</span><span class="h">esx03 .58</span><span class="h">esx04 .59</span></div>
+    <div class="lbl">這套唯一的工作:讓 Operations 與 License Server 活著,<br>當 bring-up 要指向的「既有元件」</div>
+  </div></div>
+
+  <div class="env inst"><div class="eh">VCF Installer</div><div class="eb">
+    <div class="row"><span>appliance</span></div>
+    <div class="row"><span><code>vcf-m03-inst01</code></span><span>10.0.1.71</span></div>
+    <div class="lbl">9.1.1.0.25713928<br>裝在<b>外層</b> vCenter,不屬於<br>任何管理網域</div>
+    <div class="lbl">offline depot<br><code>https://10.0.0.61</code><br>16 元件 / 64 GB 已下載</div>
+  </div></div>
+
+  <div class="env"><div class="eh">新管理網域 m03b &nbsp;<span class="tag n">全新乾淨主機</span></div><div class="eb">
+    <div class="row"><span>vCenter(待建)</span><span><code>vcf-m03b-vc01</code> 10.0.1.114</span></div>
+    <div class="row"><span>NSX ×3(待建)</span><span><code>vcf-m03-nsx01a/b/c</code></span></div>
+    <div class="row"><span>SDDC Manager(待建)</span><span><code>vcf-m03-sddcm01</code> 10.0.1.65</span></div>
+    <div class="row"><span>VSP / VCFA(待建)</span><span>IP pool 10.0.1.80-102</span></div>
+    <div class="lbl">nested ESXi ×4 · 各 16 vCPU / 128 GB · 從 OVA 全新部署</div>
+    <div class="hosts"><span class="h">esx01 .110</span><span class="h">esx02 .111</span><span class="h">esx03 .112</span><span class="h">esx04 .113</span></div>
+    <div class="lbl">乾淨 = vmnic0 在 vSwitch0、只有 vmk0、<br>磁碟無 vSAN partition、無同名 VDS</div>
+  </div></div>
+
+</div></div>
+
+<div class="net">
+<b>網路</b>&nbsp; 管理網段 <code>10.0.0.0/23</code> gw <code>10.0.0.1</code>,VLAN 0(untagged)&nbsp;·&nbsp;
+DNS <code>10.0.0.200</code>&nbsp;·&nbsp;NTP <code>10.0.1.254</code><br>
+<b>新叢集專用網段</b>&nbsp; vMotion <code>192.168.35.0/24</code> MTU 9000&nbsp;·&nbsp;
+vSAN <code>192.168.36.0/24</code> MTU 9000&nbsp;·&nbsp;NSX Overlay <code>192.168.37.0/24</code><br>
+<b>IP Pool</b>&nbsp; VCF Management Services <code>10.0.1.80-95</code>(16)&nbsp;·&nbsp;
+VCF Automation <code>10.0.1.96-102</code>(7)
+</div>
+
+<div class="foot">
+註:兩套叢集都跑在同一台實體主機上,共用同一個 L2。舊叢集瘦身成 4 vCPU/64 GB 是為了把 CPU 留給新叢集 ——
+舊 4×16 + 新 4×16 = 128 vCPU on 32 核(4:1)會重演先前 vMotion 卡在 0% 的 CPU 飢餓問題,瘦身後降到 80 vCPU(2.5:1)。
+</div>
+</body></html>

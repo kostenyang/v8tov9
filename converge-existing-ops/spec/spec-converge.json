@@ -1,0 +1,81 @@
+{
+  "version": "9.1.1.0",
+  "vcfInstanceName": "vcf-m03-instance",
+  "sddcId": "vcf-m03",
+  "ceipEnabled": false,
+  "workflowType": "VCF",
+  "vcfOperationsSpec": {
+    "adminUserPassword": "<REDACTED>",
+    "useExistingDeployment": true,
+    "nodes": [
+      {
+        "hostname": "vcf-m03-ops01.home.lab",
+        "sslThumbprint": "6D:8F:B7:C9:A6:04:5D:ED:BA:36:FE:CF:F2:95:67:28:01:A9:F4:F4:97:C0:ED:6D:4B:23:10:85:6B:9D:2D:71",
+        "type": "master"
+      }
+    ]
+  },
+  "vcfOperationsCollectorSpec": {
+    "applianceSize": "small",
+    "hostname": "vcf-m03-opsc01.home.lab",
+    "rootUserPassword": "<REDACTED>",
+    "useExistingDeployment": false
+  },
+  "vspClusterSpec": {
+    "platformFqdn": "vcf-m03-vsp01.home.lab",
+    "instanceFqdn": "vcf-m03-shared01.home.lab",
+    "fleetFqdn": "vcf-m03-fleet01.home.lab",
+    "systemUserPassword": "<REDACTED>",
+    "size": "small",
+    "name": "vcf-m03-vmsp-01",
+    "internalClusterCidrIpv4": "198.18.0.0/15",
+    "ipv4Pool": {
+      "ipRange": {
+        "startIpAddress": "10.0.1.80",
+        "endIpAddress": "10.0.1.95"
+      }
+    }
+  },
+  "vidbSpec": {
+    "hostname": "vcf-m03-vidb.home.lab"
+  },
+  "saltSpec": {},
+  "saltRaasSpec": {},
+  "telemetryAcceptorSpec": {},
+  "fleetLcmSpec": {
+    "hostname": "vcf-m03-fleet01.home.lab"
+  },
+  "sddcLcmSpec": {
+    "hostname": "vcf-m03-shared01.home.lab"
+  },
+  "fleetDepotSpec": {},
+  "vcenterSpec": {
+    "vcenterHostname": "vcf-m03-vc01.home.lab",
+    "sslThumbprint": "5E:3E:07:77:D9:05:A2:64:1B:80:65:31:A8:F0:A9:A5:91:EE:10:80:54:BA:75:3F:70:C9:CB:07:62:03:63:F7",
+    "adminUserSsoUsername": "administrator@vsphere.local",
+    "adminUserSsoPassword": "<REDACTED>",
+    "rootVcenterPassword": "<REDACTED>",
+    "useExistingDeployment": true
+  },
+  "skipEsxThumbprintValidation": true,
+  "nsxtSpec": {
+    "nsxtManagerSize": "medium",
+    "vipFqdn": "vcf-m03-nsx01.home.lab",
+    "nsxtManagers": [
+      {
+        "hostname": "vcf-m03-nsx01a.home.lab"
+      }
+    ],
+    "nsxtAdminPassword": "<REDACTED>",
+    "nsxtAuditPassword": "<REDACTED>",
+    "rootNsxtManagerPassword": "<REDACTED>",
+    "useExistingDeployment": false
+  },
+  "sddcManagerSpec": {
+    "hostname": "vcf-m03-sddcm01.home.lab",
+    "localUserPassword": "<REDACTED>",
+    "rootPassword": "<REDACTED>",
+    "sshPassword": "<REDACTED>",
+    "useExistingDeployment": false
+  }
+}
