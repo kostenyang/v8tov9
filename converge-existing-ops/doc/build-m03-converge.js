@@ -276,6 +276,43 @@ add(P('最後兩個里程碑的名字就是本文問題的答案:既有的 vCent
 add(PB());
 
 
+// ============================ 八之二:失敗與根因 ============================
+add(H2('8.1 第一次部署:NSX Manager 失敗'));
+add(P('部署跑了約 3 小時後在第三個里程碑停住。前兩個里程碑全數完成 —— 既有 vCenter 已經成功轉成 VCF instance,SDDC Manager 也部署完成。'));
+add(table(['里程碑', '結果'], [
+  ['Deploy SDDC Manager', '16/16 成功'],
+  ['Convert the existing vCenter to a new VCF instance', '42/42 成功'],
+  ['Deploy and configure NSX', '25/69 失敗,卡在 Deploy NSX Manager'],
+  ['Deploy and configure VCF Management Platform', '0/21 未開始'],
+  ['Join the existing operations appliance', '0/9 未開始'],
+], [68, 32]));
+add(F('101-deploy-failed.png', '部署失敗 — Deploy NSX Manager'));
+add(CODE([
+  'Failed to deploy NSX Manager vcf-m03-nsx01a on vcf-m03-nsx01a.home.lab.',
+  'Error: Task failed on server: No host is compatible with the virtual machine.',
+  'Remediation: Please fix the issue reported and retry the workflow.',
+  'Reference Token: I2J6CA',
+].join(String.fromCharCode(10))));
+
+add(H2('8.2 根因:單台主機的 vCPU 放不下 NSX Manager'));
+add(P('NSX Manager Medium 需要 6 vCPU。測試過程中為了另一個(後來證實用不到的)計畫,把叢集四台主機從 16 vCPU 縮成 4 vCPU。VM 的 vCPU 數不能超過主機的邏輯 CPU 數,因此沒有任何一台放得下。'));
+add(WARN('這一條值得單獨記住:VCF Installer 的容量驗證只看「叢集總量」,不看「單台主機能不能放下最大的那個 VM」。本次需求是 42 vCPU 的叢集總量,叢集有 4 台乘 4 vCPU 等於 16 vCPU,驗證仍回報 meets the resource requirements —— 但 NSX Manager 的 6 vCPU 大於單台主機的 4 vCPU,要跑到部署第三個里程碑才爆。驗證通過不等於部得起來。'));
+add(table(['項目', '驗證看的', '實際擋人的'], [
+  ['比較對象', '叢集 vCPU / RAM / 磁碟總量', '單台主機邏輯 CPU 數 vs 最大 VM 的 vCPU'],
+  ['本次數字', '需求 42 vCPU,叢集 16 vCPU,仍判定通過', 'NSX Manager 6 vCPU 大於單台 4 vCPU,無相容主機'],
+  ['出現時機', 'Validate & Deploy 階段', '部署跑到第三個里程碑才出現'],
+], [18, 41, 41]));
+
+add(H2('8.3 修復方式'));
+add(P('nested 主機沒開 CPU hot-add,只能關機改。步驟:'));
+add(BULLET('把叢集上的 appliance(SDDC Manager / Operations / License Server)優雅關機,vCenter 最後關'));
+add(BULLET('關掉四台 nested 主機,改回 16 vCPU(RAM 維持 64 GB),再開機'));
+add(BULLET('依序開回 vCenter → License Server → Operations → SDDC Manager'));
+add(BULLET('回到精靈按 RETRY,工作流會從失敗的那一步接續'));
+add(NOTE('事前檢查的方法:把「要部署的最大 VM 的 vCPU 數」跟「單台主機的邏輯 CPU 數」比一次。Simple 模式下最大的是 NSX Manager Medium(6 vCPU);High Availability 模式一樣是 NSX Manager Medium,但會部三台。'));
+add(PB());
+
+
 // ============================ 九、坑與教訓 ============================
 add(H1('九、坑與教訓彙整'));
 
@@ -292,7 +329,8 @@ add(table(['症狀', '真因', '解法'], [
   ['offline depot 接不上,錯誤碼 VMWARE_DEPOT_OFFLINE_INVALID_URL', '只吃裸 IP 不吃 FQDN;訊息講 query/fragment 是誤導', 'URL 改成 https://<IP>'],
   ['主機瘦身後 appliance 開不了機', 'HA admission control 的 25% 失效移轉保留吃不下', '關掉該叢集的 HA 或 admission control'],
   ['DNS 同一個 IP 有多筆 A 記錄', '別的測試留下的殘影', '反解 PTR 正確就不影響驗證,但要確認殘影沒指到正在用的機器'],
-  ['nested vMotion 卡在 0%', 'CPU 超配造成收端被餓死(不是網路)', '降低 vCPU 總量;本次把舊叢集從 4×16 縮成 4×4'],
+  ['nested vMotion 卡在 0%', 'CPU 超配造成收端被餓死(不是網路)', '降低 vCPU 總量'],
+  ['驗證全過,部署卻報 No host is compatible', '容量驗證只看叢集總量,不看單台主機放不放得下最大的 VM', '確認單台主機的邏輯 CPU >= 最大 VM 的 vCPU(NSX Manager Medium = 6)'],
 ], [30, 36, 34]));
 
 add(WARN('🔴 本次差點出事:DNS 裡 vcf-m03-nsx01b 指向 10.0.1.59、vcf-m03-nsx01c 指向 10.0.1.60 —— 那正是本次環境的 esx04 與 vCenter。NSX 三節點在 HA 模式是必填,照著這兩個名字部下去會直接打到正在跑的主機和 vCenter。部署前務必逐一確認要用的 FQDN 沒有指到活著的機器。'));

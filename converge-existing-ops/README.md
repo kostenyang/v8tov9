@@ -75,6 +75,38 @@ Selected cluster vcf-m03-cl01 as the deployment destination.
 | Deploy and configure VCF Management Platform | 21 |
 | **Join the existing operations appliance** | 9 |
 
+## 部署實測結果
+
+| 里程碑 | 結果 |
+|---|---|
+| Deploy SDDC Manager | 16/16 ✅ |
+| **Convert the existing vCenter to a new VCF instance** | 42/42 ✅ |
+| Deploy and configure NSX | 25/69 ❌ `Deploy NSX Manager` |
+| Deploy and configure VCF Management Platform | 0/21 |
+| **Join the existing operations appliance** | 0/9 |
+
+```
+Failed to deploy NSX Manager vcf-m03-nsx01a on vcf-m03-nsx01a.home.lab.
+Error: Task failed on server: No host is compatible with the virtual machine.
+```
+
+**既有 vCenter 併入管理網域這一段(42/42)是成功的**,SDDC Manager 也部起來了。
+失敗在 NSX,而且根因不是 converge 流程本身 —— 是測試過程中把叢集主機從 16 vCPU
+縮成 4 vCPU,而 NSX Manager Medium 要 6 vCPU,VM 的 vCPU 不能超過主機的邏輯 CPU 數。
+
+### 🔑 由此得到的發現:驗證通過 ≠ 部得起來
+
+**VCF Installer 的容量驗證只看「叢集總量」,不看「單台主機能不能放下最大的那個 VM」。**
+
+| | 驗證看的 | 實際擋人的 |
+|---|---|---|
+| 比較對象 | 叢集 vCPU / RAM / 磁碟**總量** | **單台主機**邏輯 CPU vs 最大 VM 的 vCPU |
+| 本次數字 | 需求 42 vCPU,叢集 4×4=16 vCPU → 仍判定 PASS | NSX Manager 6 vCPU > 單台 4 vCPU → 無相容主機 |
+| 出現時機 | Validate & Deploy 階段 | 部署跑到第三個里程碑才爆 |
+
+事前自己檢查:**最大 VM 的 vCPU ≤ 單台主機的邏輯 CPU**。
+Simple 模式最大的是 NSX Manager Medium(6 vCPU)。
+
 ## 🔴 踩到的坑
 
 | 症狀 | 真因 | 解法 |
