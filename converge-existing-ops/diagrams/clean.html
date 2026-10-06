@@ -1,0 +1,76 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:#fff;padding:26px 32px;width:1300px}
+h1{font-size:23px;color:#1F4E79}
+.sub{font-size:13.5px;color:#777;margin:4px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{background:#1F4E79;color:#fff;padding:8px 11px;text-align:left;font-weight:bold}
+th.c{width:200px}
+td{border:1px solid #d8dde3;padding:8px 11px;vertical-align:top;line-height:1.65}
+tr:nth-child(even) td{background:#fafbfc}
+code{background:#eef3f8;padding:0 4px;border-radius:3px;font-family:Consolas,monospace;font-size:11.5px}
+.err{font-family:Consolas,monospace;font-size:11.5px;color:#C62828;font-weight:bold}
+.bad{color:#C62828}
+.good{color:#2E7D32}
+.mark{display:inline-block;width:17px;text-align:center;font-weight:bold}
+.legend{margin-top:14px;font-size:12.5px;color:#555;line-height:1.85;border-left:4px solid #1F4E79;padding-left:12px}
+.note{margin-top:14px;border:2px solid #B77E00;border-radius:8px;background:#FFFBF0;padding:11px 15px;font-size:12.5px;line-height:1.8}
+.note b{color:#B77E00}
+</style></head><body>
+
+<h1>圖 3 — Greenfield 路徑對「乾淨主機」的六項要求</h1>
+<div class="sub">⚠ 只在 <b>Plan → Existing Component 什麼都不勾</b>(greenfield)時適用。把既有叢集餵進這條路,16 項驗證中有 4 項失敗 —— 下表是實測回傳的錯誤碼。<br>勾了「既有 Operations / vCenter」走 converge 的話,這六項檢查<b>整組不會執行</b>(見圖 2)。</div>
+
+<table>
+<tr><th class="c">驗證項目 / 錯誤碼</th><th>精靈期待的狀態</th><th>既有叢集的實況</th></tr>
+
+<tr><td><b>ESX Host Configuration</b><br><span class="err">MANAGEMENT_VSWITCH_<br>VMNIC_IN_USE</span></td>
+<td><span class="mark good">✓</span>vmnic0 掛在標準交換器 <code>vSwitch0</code><br>(剛好 1 張實體網卡)</td>
+<td><span class="mark bad">✗</span>vSwitch0 上 <b>0 張</b>網卡 —— 兩張都被 VDS 接走<br>
+<i>"has 0 Physical NICs connected to vSwitch0 (Expecting 1)"</i></td></tr>
+
+<tr><td><span class="err">VMNIC_IN_USE</span></td>
+<td><span class="mark good">✓</span>vmnic0 以外的實體網卡<b>未指派</b></td>
+<td><span class="mark bad">✗</span>vmnic0 與 vmnic1 都在用<br>
+<i>"is in use (Expecting to be unassigned)"</i></td></tr>
+
+<tr><td><span class="err">MORE_THAN_ONE_<br>VMKERNEL_CONFIGURED</span></td>
+<td><span class="mark good">✓</span><b>只有 vmk0</b> 一張 VMkernel(管理用)</td>
+<td><span class="mark bad">✗</span>有 vmk0 + vmk1(專用 vMotion)<br>
+<i>"more than one ([vmk0, vmk1]) VM Kernel Adapters"</i></td></tr>
+
+<tr><td><b>vSAN Disks Availability</b><br><span class="err">VSAN_PARTITION_<br>FOUND_ON_HOST</span></td>
+<td><span class="mark good">✓</span>磁碟<b>沒有 vSAN partition</b></td>
+<td><span class="mark bad">✗</span>磁碟已被既有 vSAN 叢集認領<br>
+<i>"vSAN partition already exists"</i></td></tr>
+
+<tr><td><span class="err">VSAN_ZERO_SSD_DISKS_<br>VALIDATION</span></td>
+<td><span class="mark good">✓</span>至少一顆磁碟標記成 <b>SSD</b>(cache tier 用)</td>
+<td><span class="mark bad">✗</span>磁碟已被 vSAN 佔用,不在「可用」清單裡<br>
+<i>"found zero SSD devices for SSD cache tier"</i></td></tr>
+
+<tr><td><b>vMotion Network Connectivity</b><br><span class="err">VSWITCH_EXISTS</span></td>
+<td><span class="mark good">✓</span>沒有同名的分散式交換器</td>
+<td><span class="mark bad">✗</span><code>vcf-m03-cl01-vds01</code> 已存在<br>
+<i>"vSwitch '...' already exists on ESX Host"</i></td></tr>
+
+<tr><td><b>Network Configuration</b><br><span class="err">IP_NOT_IN_USE</span></td>
+<td><span class="mark good">✓</span>所有要部署元件的 IP <b>都還沒被佔用</b></td>
+<td><span class="mark bad">✗</span>既有 vCenter 就在那個 IP 上<br>
+<i>"IP 10.0.1.60 allocated for vcf-m03-vc01.home.lab is already in use"</i></td></tr>
+</table>
+
+<div class="legend">
+前六項講的是同一件事:<b>Deployment Wizard 是 greenfield 工具,它要的是剛裝好、什麼都沒設定的 ESXi</b>。<br>
+最後一項 <span class="err">IP_NOT_IN_USE</span> 是另一回事 —— 在 greenfield 路徑下,<b>填既有元件的 FQDN 只會讓精靈以為那是「要新部署的目標」</b>,
+看到 IP 被佔用就報錯。要讓它認得既有元件,必須回到 <b>Plan → Existing Component</b> 勾選。
+</div>
+
+<div class="note">
+<b>所以怎麼辦</b>&nbsp;·&nbsp;
+① 這六項只擋 greenfield 路徑。既有叢集要變管理網域,正解是在 Plan 階段勾「既有 vCenter」走 converge,不是把主機洗乾淨。<br>
+② <code>useExistingDeployment</code> 不必手動改 JSON —— Plan 階段勾選後精靈會自己設成 <code>true</code>。<br>
+③ 走 converge 時 License Server 連填都不用填 —— 既有 Operations 已經接著它,精靈直接繼承。
+</div>
+</body></html>

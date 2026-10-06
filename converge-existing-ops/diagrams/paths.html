@@ -1,0 +1,101 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:#fff;padding:26px 32px;width:1320px}
+h1{font-size:23px;color:#1F4E79}
+.sub{font-size:13.5px;color:#777;margin:4px 0 18px}
+.q{background:#1F4E79;color:#fff;border-radius:8px;padding:10px 18px;font-size:15px;font-weight:bold;display:inline-block;margin-bottom:10px}
+.tree{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:12px;align-items:start}
+.br{border:2px solid #ccc;border-radius:8px;overflow:hidden}
+.br.ok{border-color:#2E7D32}.br.mid{border-color:#B77E00}.br.no{border-color:#C62828}
+.br .bh{padding:9px 13px;font-size:13.5px;font-weight:bold;color:#fff;background:#999;line-height:1.55}
+.br.ok .bh{background:#2E7D32}.br.mid .bh{background:#B77E00}.br.no .bh{background:#C62828}
+.br .bb{padding:11px 13px;font-size:12.5px;line-height:1.8}
+.br .bf{padding:9px 13px;font-size:12px;background:#f6f6f6;border-top:1px solid #e3e3e3;line-height:1.7}
+code{background:#eef3f8;padding:0 4px;border-radius:3px;font-family:Consolas,monospace;font-size:11.5px}
+.verdict{display:inline-block;border-radius:3px;padding:1px 8px;font-size:11.5px;color:#fff;font-weight:bold;background:rgba(0,0,0,.25)}
+.step{margin:4px 0;padding-left:15px;position:relative}
+.step:before{content:"▸";position:absolute;left:0;color:#999}
+.key{margin-top:16px;border:2px solid #1F4E79;border-radius:8px;overflow:hidden}
+.key .kh{background:#1F4E79;color:#fff;padding:7px 13px;font-size:14px;font-weight:bold}
+.key .kb{padding:12px 15px;font-size:12.5px;line-height:1.85;background:#fafbfc}
+pre{background:#2b2b2b;color:#e6e6e6;border-radius:5px;padding:10px 13px;font-family:Consolas,monospace;font-size:11.5px;line-height:1.65;margin:8px 0}
+.c1{color:#9cdcfe}.c2{color:#ce9178}.c3{color:#6a9955}.c4{color:#4ec9b0;font-weight:bold}.c5{color:#f48771;font-weight:bold}
+.chk{font-family:Consolas,monospace;font-size:12px;line-height:1.9;background:#fff;border:1px solid #d8dde3;border-radius:5px;padding:9px 12px;margin:7px 0;white-space:pre-line}
+.lock{color:#B77E00;font-weight:bold}
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:7px}
+th{background:#5a6b7d;color:#fff;padding:6px 10px;text-align:left}
+td{border:1px solid #d8dde3;padding:6px 10px}
+tr:nth-child(even) td{background:#f7f9fa}
+.gone{color:#C62828;text-decoration:line-through}
+</style></head><body>
+
+<h1>圖 2 — 「我已經有 X,怎麼進 VCF 管理網域?」三條路</h1>
+<div class="sub">同一個問題,依「X 是什麼」分岔成三條完全不同的路徑。本次全部實測</div>
+
+<div class="q">我已經有 ___,想併進 VCF 9.1.1 管理網域</div>
+
+<div class="tree">
+
+  <div class="br ok"><div class="bh">X = VCF Operations<br>(含它附帶的 License Server)<br><span class="verdict">✅ UI 精靈原生支援</span></div>
+  <div class="bb">
+    <div class="step"><b>Plan → Step 1 Existing Component</b><br>勾「I have an existing VCF Operations 9.1 instance」</div>
+    <div class="step">Prepare → VCF Management 填 FQDN + 密碼,按 <b>CONNECT</b></div>
+    <div class="step">確認憑證指紋 → <i>Successfully detected</i></div>
+    <div class="step"><b>License Server 欄位自動消失</b> —— 既有 Operations 已經接著它,精靈直接繼承</div>
+  </div>
+  <div class="bf">spec:<code>"useExistingDeployment": true</code><br>
+  部署里程碑:<b>Join the existing operations appliance</b></div></div>
+
+  <div class="br ok"><div class="bh">X = vCenter + 它的 vSphere 叢集<br><span class="verdict">✅ 同一條路,而且是強制的</span></div>
+  <div class="bb">
+    <div class="step">同一頁勾「I have an existing vCenter instance」</div>
+    <div class="step"><span class="lock">🔒 只要勾了既有 Operations,這一項會自動勾選並鎖住</span> —— 精靈強制管理網域的 vCenter 必須是 Operations 所在的那一台</div>
+    <div class="step">destination cluster = <b>跑著 vCenter appliance 的那個叢集</b>,不能另選</div>
+    <div class="step">既有叢集的主機/VDS/vSAN 全部沿用,不必是乾淨主機</div>
+  </div>
+  <div class="bf">部署里程碑:<b>Convert the existing vCenter to a new VCF instance</b>(42 個子任務)</div></div>
+
+  <div class="br no"><div class="bh">X = 只有一堆 ESXi 主機<br>(沒有既有 vCenter / Operations)<br><span class="verdict">⚠ 走 greenfield,要乾淨主機</span></div>
+  <div class="bb">
+    <div class="step">Existing Component 什麼都不勾</div>
+    <div class="step">Prepare 變成 <b>9 步</b>,多出 Hosts / Storage / Distributed Switch</div>
+    <div class="step">主機必須是乾淨的,六項檢查見<b>圖 3</b></div>
+    <div class="step">既有叢集餵進來會六項全掛</div>
+  </div>
+  <div class="bf">想把既有 vSphere 叢集變 <b>workload domain</b>(不是管理網域),走 VCF Operations 的 <b>Import a vCenter</b></div></div>
+
+</div>
+
+<div class="key"><div class="kh">關鍵:開關在 Plan 階段,不在 Prepare 階段</div><div class="kb">
+精靈分成 <b>Introduction → Plan → Prepare → Deploy</b> 四個階段。
+「要不要用既有元件」是在 <b>Plan 的第 1 步</b>決定的,決定完之後 Prepare 的步數與欄位會整個跟著變。
+Plan 這一步跳過的話,Prepare 就是純 greenfield 的 9 步,對既有環境一定過不了驗證。
+
+<div class="chk">Plan → Step 1 &nbsp;<b>Existing Component</b>
+[v] I have an existing VCF Operations 9.1 instance
+[v] I have an existing vCenter instance            <span class="lock">← 自動勾選 + DISABLED</span>
+[ ] The vCenter instance is registered with NSX Manager
+[v] I have an existing VCF Automation instance or I will deploy later</div>
+
+<table>
+<tr><th>Prepare 階段</th><th>Greenfield(什麼都不勾)</th><th>Converge(勾既有 Operations + vCenter)</th></tr>
+<tr><td>步數</td><td>9 步</td><td><b>6 步</b></td></tr>
+<tr><td>Hosts</td><td>要填 4 台 FQDN + root 密碼 + 確認指紋</td><td class="gone">沒有這一步</td></tr>
+<tr><td>Storage</td><td>要選 vSAN 架構 / FTT / datastore 名稱</td><td class="gone">沒有這一步</td></tr>
+<tr><td>Distributed Switch</td><td>要選 profile、配 uplink、設 5 個 portgroup</td><td class="gone">沒有這一步</td></tr>
+<tr><td>Networks</td><td>7 個網段(ESX/VM mgmt、vMotion、vSAN、NSX overlay、2 個 IP pool)</td><td><b>只要 1 個</b>:VCF Management Services IP Pool</td></tr>
+<tr><td>驗證項目</td><td>16 項</td><td>12 項(多了 <i>Existing Components</i> 與 <i>Brownfield VCF Management Services validation</i>)</td></tr>
+</table>
+
+<pre><span class="c3">// Converge 路徑產生的 spec(本次實測下載)</span>
+<span class="c1">"vcfOperationsSpec"</span>: { <span class="c1">"useExistingDeployment"</span>: <span class="c4">true</span>,
+                       <span class="c1">"nodes"</span>: [{ <span class="c1">"hostname"</span>: <span class="c2">"vcf-m03-ops01.home.lab"</span>, <span class="c1">"type"</span>: <span class="c2">"master"</span> }] },
+<span class="c1">"vcenterSpec"</span>:       { <span class="c1">"useExistingDeployment"</span>: <span class="c4">true</span>, ... },
+<span class="c1">"sddcManagerSpec"</span>:   { <span class="c1">"useExistingDeployment"</span>: <span class="c5">false</span> },   <span class="c3">// 新部署</span>
+<span class="c1">"nsxtSpec"</span>:          { <span class="c1">"useExistingDeployment"</span>: <span class="c5">false</span> }    <span class="c3">// 新部署,Simple 模式單節點</span>
+<span class="c3">// licenseServerSpec 整個不存在 —— 既有 Operations 已經有 License Server
+// hostSpecs / clusterSpec / datastoreSpec / dvsSpecs / networkSpecs 也都不存在 —— 全部繼承既有叢集</span></pre>
+</div></div>
+
+</body></html>
