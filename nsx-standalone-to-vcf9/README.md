@@ -57,6 +57,15 @@ appliance 內 `/mnt/iso/sddc-foundation-bundle-.../{vcenter_ova,nsxt_ova,esx_iso
 
 四個共同 WARNING（可 acknowledge）：31911 FPROT context profile、36014 NSX-V 遷移、31935 MP API 棄用、31954 Malicious IP DFW rule。
 
+原始紀錄（2026-10-22，UC 9.1.1.0 的 `/api/v1/upgrade/pre-upgrade-checks/failures` 輸出）：
+
+| 檔案 | 內容 |
+|---|---|
+| [`evidence/m06/06-precheck-failures.json`](evidence/m06/06-precheck-failures.json) | Cloud Builder 部：4 WARNING，無 31944 |
+| [`evidence/m07/06-precheck-failures.json`](evidence/m07/06-precheck-failures.json) | 手動部：FAILURE 31944 + 4 WARNING |
+| [`evidence/m07/watermark-test.txt`](evidence/m07/watermark-test.txt) | 手動部補 watermark 全程：GET 404 → POST 201 → GET 200 → 重跑預檢 → 失敗清單 |
+| [`evidence/m07/07-precheck-failures-after-watermark.json`](evidence/m07/07-precheck-failures-after-watermark.json) | 補 watermark 後：0 FAILURE，剩 4 WARNING |
+
 ## 4. lab 繞過（`scripts/watermark-curl.sh`）
 
 ```bash

@@ -1,0 +1,70 @@
+{
+  "results": [
+    {
+      "type": "WARNING",
+      "message": {
+        "message": " The Context Profiles [/infra/context-profiles/FPROT] contains un-supported APP IDs [FPROT]. Kindly modify or update the specified context profiles to remove the unsupported APP IDs. For further details, consult KB article number 410572.",
+        "error_code": 31911
+      },
+      "component_type": "MP",
+      "origin_id": "MP",
+      "origin_name": "MP Component",
+      "origin_type": "COMPONENT",
+      "needs_ack": true,
+      "acked": false,
+      "needs_resolve": false,
+      "resolution_status": "RESOLVED",
+      "id": "dataConsistencyCheckCheck-UnsupportedAppIdsDetectionTask"
+    },
+    {
+      "type": "WARNING",
+      "message": {
+        "message": "The capability for migrating from NSX for vSphere (NSX-V) to NSX will no longer be supported beginning with the release of VCF 9.0. If a migration is currently underway, please complete the migration prior to upgrading to this VCF release.",
+        "error_code": 36014
+      },
+      "component_type": "MP",
+      "origin_id": "MP",
+      "origin_name": "MP Component",
+      "origin_type": "COMPONENT",
+      "needs_ack": true,
+      "acked": false,
+      "needs_resolve": false,
+      "resolution_status": "RESOLVED",
+      "id": "v2tRemovalCheck"
+    },
+    {
+      "type": "WARNING",
+      "message": {
+        "message": "It is strongly recommended to avoid creating logical objects with the deprecated NSX Manager API (MP API starting in /api), as they will be phased out in NSX 9.0 and newer versions. This implies that these objects must be deleted before the upgrade is completed. For more information, please review the release notes and check - https://knowledge.broadcom.com/external/article/385606.",
+        "error_code": 31935
+      },
+      "component_type": "MP",
+      "origin_id": "MP",
+      "origin_name": "MP Component",
+      "origin_type": "COMPONENT",
+      "needs_ack": true,
+      "acked": false,
+      "needs_resolve": false,
+      "resolution_status": "RESOLVED",
+      "id": "mP2PolicyWarningCheck"
+    },
+    {
+      "type": "WARNING",
+      "message": {
+        "message": "This upgrade will disable the default Distributed Firewall rule 'Malicious IP at Destination Rule' in a local NSX Manager, and 'Global Malicious IP at Destination Rule' in a Global Manager. To continue having these rules in effect, you must enable them after the upgrade. To enable the rules, see https://techdocs.broadcom.com/us/en/vmware-security-load-balancing/vdefend/vdefend-firewall/9-1/vdefend-distributed-firewall/malicious-ip-feeds.html",
+        "error_code": 31954
+      },
+      "component_type": "MP",
+      "origin_id": "MP",
+      "origin_name": "MP Component",
+      "origin_type": "COMPONENT",
+      "needs_ack": true,
+      "acked": false,
+      "needs_resolve": false,
+      "resolution_status": "RESOLVED",
+      "id": "ipReputationOutboundWarningCheck"
+    }
+  ],
+  "result_count": 4,
+  "sort_ascending": true
+}
