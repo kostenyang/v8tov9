@@ -77,6 +77,9 @@ bash watermark-curl.sh failures   # 31944 應消失
 bash watermark-curl.sh delete     # 還原
 ```
 
+互動版 `scripts/watermark-curl-v1.sh`（同樣六個子命令）：直接執行會依序詢問 NSX Manager IP/FQDN、admin 密碼（`post` 另問 `managed_by`、`version`），
+`post`/`delete` 送出前要按 y 確認，`get`/`post`/`delete` 會印 HTTP 狀態碼。設了環境變數 `NSX`、`NSX_PASS`（選填 `NSX_USER`、`MANAGED_BY`、`WM_VERSION`）就不問。
+
 ## 5. 補 watermark 後的實際升級
 
 `scripts/nsx-host-chain.ps1`：等 MP SUCCESS → `plan?action=continue` 做 HOST → 停在 FINALIZE 前
