@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NSX standalone -> 9.x : vcfEnvironmentCheck (31944) bypass test via /api/v1/watermark  (lab only, unsupported)
+# NSX standalone -> 9.x : vcfEnvironmentCheck (31944) bypass test via /api/v1/watermark  (currently a manual/lab bypass; candidate for a standardized VCF flow — RD WIP)
 # v1 2026-10-22: interactive prompts (NSX address / password / post fields) + y/N confirm on post and delete; original = watermark-curl.sh
 #   bash watermark-curl-v1.sh [get|post|precheck|status|failures|delete]
 # Prompts for the NSX Manager address and admin password. Set these in the environment to skip the prompts

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NSX standalone -> 9.x : vcfEnvironmentCheck (31944) bypass test via /api/v1/watermark  (lab only, unsupported)
+# NSX standalone -> 9.x : vcfEnvironmentCheck (31944) bypass test via /api/v1/watermark  (currently a manual/lab bypass; candidate for a standardized VCF flow — RD WIP)
 # 2026-10-22 m07 (manually deployed NSX 4.2.1, never in VCF)
 #   bash watermark-curl.sh get|post|precheck|failures|delete
 # NSX_PASS must be set in the environment (admin password); NSX defaults to m07 node IP.
