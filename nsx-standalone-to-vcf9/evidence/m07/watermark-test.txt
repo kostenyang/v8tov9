@@ -1,0 +1,61 @@
+### 2026-10-22 10:33:38 watermark test on m07 (10.0.1.166)
+--- 1. GET before
+{
+  "httpStatus" : "NOT_FOUND",
+  "error_code" : 600,
+  "module_name" : "common-services",
+  "error_message" : "The requested object : Deployment Info Details could not be found. Object identifiers are case sensitive."
+}
+--- 2. POST
+{
+  "deployed_by" : "VMware Cloud Foundation - VSRN",
+  "version" : "5.2.1.0-24307856",
+  "managed_by" : "vcf-m07-sddcm01.home.lab",
+  "instance_id" : "03ffdb9f-ada7-4aef-a767-82ef88402b45",
+  "log_token" : "VCF",
+  "resource_type" : "NSXManagerDeploymentInfo",
+  "id" : "2ae5fcf2-2008-4bae-96b1-e5a3e3efacc7",
+  "display_name" : "2ae5fcf2-2008-4bae-96b1-e5a3e3efacc7",
+  "_system_owned" : false,
+  "_protection" : "NOT_PROTECTED",
+  "_create_time" : 1792636242973,
+  "_create_user" : "admin",
+  "_last_modified_time" : 1792636242973,
+  "_last_modified_user" : "admin",
+  "_revision" : 0
+}
+--- 3. GET after
+{
+  "deployed_by" : "VMware Cloud Foundation - VSRN",
+  "version" : "5.2.1.0-24307856",
+  "managed_by" : "vcf-m07-sddcm01.home.lab",
+  "instance_id" : "03ffdb9f-ada7-4aef-a767-82ef88402b45",
+  "log_token" : "VCF",
+  "resource_type" : "NSXManagerDeploymentInfo",
+  "id" : "2ae5fcf2-2008-4bae-96b1-e5a3e3efacc7",
+  "display_name" : "2ae5fcf2-2008-4bae-96b1-e5a3e3efacc7",
+  "_system_owned" : false,
+  "_protection" : "NOT_PROTECTED",
+  "_create_time" : 1792636242973,
+  "_create_user" : "admin",
+  "_last_modified_time" : 1792636242973,
+  "_last_modified_user" : "admin",
+  "_revision" : 0
+}
+--- 4. re-run pre-checks
+
+poll: curl -sk -u admin:*** https://10.0.1.166/api/v1/upgrade/status-summary
+--- 5. status after re-run
+MP COMPLETED HOST COMPLETED EDGE COMPLETED FINALIZE_UPGRADE COMPLETED 
+--- 6. failures after watermark
+  File "<string>", line 1
+    import sys,json; d=json.load(sys.stdin); print("count", d["result_count"]); [print(f"[{r[\"type\"]}] {r[\"message\"][\"error_code\"]} ack={r.get(\"needs_ack\")} {r[\"message\"][\"message\"][:140]}") for r in d["results"]]
+                                                                                              ^
+SyntaxError: unexpected character after line continuation character
+
+--- 6b. failures after watermark, re-parsed from 07-precheck-failures-after-watermark.json with the fixed script (step 6 above hit the f-string bug fixed in f4d765f)
+count 4
+[WARNING] 31911 ack=True  The Context Profiles [/infra/context-profiles/FPROT] contains un-supported APP IDs [FPROT]. Kindly modify or update the specified context p
+[WARNING] 36014 ack=True The capability for migrating from NSX for vSphere (NSX-V) to NSX will no longer be supported beginning with the release of VCF 9.0. If a mig
+[WARNING] 31935 ack=True It is strongly recommended to avoid creating logical objects with the deprecated NSX Manager API (MP API starting in /api), as they will be 
+[WARNING] 31954 ack=True This upgrade will disable the default Distributed Firewall rule 'Malicious IP at Destination Rule' in a local NSX Manager, and 'Global Malic
