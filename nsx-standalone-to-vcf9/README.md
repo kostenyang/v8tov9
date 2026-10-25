@@ -677,3 +677,13 @@ m07 另有一個 host 層坑（reboot 後遇到）：vmk0+vmnic0 曾被搬到 VD
 VM 被孤立（`Team Uplink: void`）。救法：`esxcfg-vswitch -Q <vmnic> -V <dvport> <dvs>` 退回 uplink 給 vSwitch0
 恢復連線，再由 vCenter 把 VM 搬到 VDS PG。若 host vmk0 也要在 VDS，`Add-VDSwitchPhysicalNetworkAdapter`
 一次原子地搬 pnic+vmk 以保留 rollback 保護。
+
+---
+
+## 10. 延伸驗證：m08 乾淨隔離測試（只升 vCenter + NSX，ESXi 留 8.0U3b）
+
+另起一套全新的 standalone vSphere 8 + NSX 4.2.1（媒體取自 Cloud Builder，但逐台手動部署），
+**只把 vCenter 與 NSX 升到 9.1.1、ESXi 不動**，再用 Installer UI（Deploy using JSON spec）converge。
+結果 `COMPLETED_WITH_SUCCESS` 133/133，SDDC Manager 看到 vCenter/NSX 9.1.1、ESXi 8.0.3-24280767。
+
+完整步驟、全程截圖、15 項坑與 docx：[`m08-vc-nsx-only/`](m08-vc-nsx-only/README.md)
