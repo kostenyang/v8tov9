@@ -1,0 +1,38 @@
+{
+  "__version": "2.13.0",
+  "__comments": "m08: upgrade vcf-m08-vc01 8.0U3c -> 9.1.1.0. Host-direct deploy to esx03 (not source esx02), DRS=PartiallyAutomated satisfies RDU prereq, bypasses cluster HostPicker.",
+  "new_vcsa": {
+    "esxi": {
+      "hostname": "10.0.1.143",
+      "username": "root",
+      "password": "<password>",
+      "deployment_network": "VM Network",
+      "datastore": "vsanDatastore"
+    },
+    "appliance": {
+      "thin_disk_mode": true,
+      "deployment_option": "small",
+      "name": "vcf-m08-vc01-911"
+    },
+    "os": { "ssh_enable": true },
+    "temporary_network": {
+      "ip_family": "ipv4", "mode": "static",
+      "ip": "10.0.1.156", "prefix": "23",
+      "gateway": "10.0.0.1", "dns_servers": ["10.0.0.200"]
+    },
+    "user_options": { "vcdb_migrateSet": "core" }
+  },
+  "source_vc": {
+    "managing_esxi_or_vc": {
+      "hostname": "10.0.1.144",
+      "username": "administrator@vsphere.local",
+      "password": "<password>"
+    },
+    "vc_vcsa": {
+      "hostname": "vcf-m08-vc01.home.lab",
+      "username": "administrator@vsphere.local", "password": "<password>",
+      "root_password": "<password>"
+    }
+  },
+  "ceip": { "settings": { "ceip_enabled": false } }
+}

@@ -1,0 +1,93 @@
+{
+  "sddcId": "vcf-m08",
+  "vcfInstanceName": "vcf-m08-converge",
+  "workflowType": "VCF",
+  "version": "9.1.1.0",
+  "ceipEnabled": false,
+  "managementPoolName": "vcf-m08-np01",
+  "skipEsxThumbprintValidation": true,
+  "vcenterSpec": {
+    "vcenterHostname": "vcf-m08-vc01.home.lab",
+    "rootVcenterPassword": "<password>",
+    "adminUserSsoUsername": "administrator@vsphere.local",
+    "adminUserSsoPassword": "<password>",
+    "useExistingDeployment": true,
+    "sslThumbprint": "F9:7B:19:99:0B:6C:63:22:18:FF:E4:C0:F1:CF:78:C1:63:BA:D2:2A:D1:E5:C2:48:05:98:27:42:33:D1:4E:23"
+  },
+  "nsxtSpec": {
+    "useExistingDeployment": true,
+    "nsxtManagers": [
+      {
+        "hostname": "vcf-m08-nsx01a.home.lab"
+      }
+    ],
+    "vipFqdn": "vcf-m08-nsx01.home.lab",
+    "nsxtAdminPassword": "<password>",
+    "rootNsxtManagerPassword": "<password>",
+    "nsxtAuditPassword": "<password>",
+    "sslThumbprint": "87:36:45:C5:B1:30:BA:8B:17:3D:A2:6B:E1:7A:FA:A5:51:9D:1A:DF:B6:67:EE:DA:39:EB:36:3A:DE:5D:07:BD"
+  },
+  "clusterSpec": {
+    "datacenterName": "m08-dc",
+    "clusterName": "m08-cl01"
+  },
+  "vcfManagementComponentsInfrastructureSpec": {
+    "xRegionNetwork": {
+      "networkName": "m08-vds01-pg-mgmt",
+      "gateway": "10.0.0.1",
+      "subnetMask": "255.255.254.0"
+    }
+  },
+  "sddcManagerSpec": {
+    "hostname": "vcf-m08-sddcm01.home.lab",
+    "useExistingDeployment": false,
+    "rootPassword": "<password>",
+    "sshPassword": "<password>",
+    "localUserPassword": "<password>"
+  },
+  "vspClusterSpec": {
+    "name": "m08-vmsp-01",
+    "platformFqdn": "vcf-m08-vsp01.home.lab",
+    "instanceFqdn": "vcf-m08-shared01.home.lab",
+    "fleetFqdn": "vcf-m08-fleet01.home.lab",
+    "systemUserPassword": "<password>",
+    "size": "small",
+    "internalClusterCidrIpv4": "198.18.0.0/15",
+    "ipv4Pool": {
+      "ipRange": {
+        "startIpAddress": "10.0.1.224",
+        "endIpAddress": "10.0.1.236"
+      }
+    }
+  },
+  "vidbSpec": {
+    "hostname": "vcf-m08-vidb.home.lab"
+  },
+  "fleetLcmSpec": {
+    "hostname": "vcf-m08-fleet01.home.lab"
+  },
+  "sddcLcmSpec": {
+    "hostname": "vcf-m08-shared01.home.lab"
+  },
+  "vcfOperationsSpec": {
+    "useExistingDeployment": false,
+    "applianceSize": "small",
+    "adminUserPassword": "<password>",
+    "nodes": [
+      {
+        "hostname": "vcf-m08-ops01.home.lab",
+        "type": "master",
+        "rootUserPassword": "<password>"
+      }
+    ]
+  },
+  "vcfOperationsCollectorSpec": {
+    "hostname": "vcf-m08-opsc01.home.lab",
+    "applianceSize": "small",
+    "useExistingDeployment": false,
+    "rootUserPassword": "<password>"
+  },
+  "licenseServerSpec": {
+    "hostname": "vcf-m08-lic01.home.lab"
+  }
+}

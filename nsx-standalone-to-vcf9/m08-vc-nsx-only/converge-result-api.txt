@@ -1,0 +1,14 @@
+== domains
+  vcf-m08 MANAGEMENT ACTIVE
+== vcenters
+  vcf-m08-vc01.home.lab 9.1.1.0.25712839
+== nsxt
+  vcf-m08-nsx01.home.lab 9.1.1.0.25691509 ACTIVE
+== clusters
+  m08-cl01 vsanDatastore True 3 hosts
+== hosts
+  vcf-m08-esx01.home.lab 8.0.3-24280767 ASSIGNED
+  vcf-m08-esx02.home.lab 8.0.3-24280767 ASSIGNED
+  vcf-m08-esx03.home.lab 8.0.3-24280767 ASSIGNED
+== sddc-manager
+  vcf-m08-sddcm01.home.lab 9.1.1.0.25713928
